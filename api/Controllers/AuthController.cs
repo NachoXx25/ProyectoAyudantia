@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Proyecto_web_api.Application.DTOs.AuthDTOs;
 using Proyecto_web_api.Application.Services.Interfaces;
 
@@ -15,7 +16,22 @@ namespace Proyecto_web_api.api.Controllers
             _authService = authService;
         }
 
+        [HttpPost("Login")]
+        public async Task<IActionResult> Login(LoginDTO login)
+        {
+            if(!ModelState.IsValid) return BadRequest(ModelState);
 
+            try
+            {
+                var result = await _authService.Login(login);
+                if(result.GetType().Equals(typeof(string))) return Ok(new { Token = result });
+                return BadRequest(result);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(new { ex.Message });
+            }
+        }
 
 
         [HttpPost("Register")]
@@ -30,7 +46,7 @@ namespace Proyecto_web_api.api.Controllers
             }
             catch(Exception ex)
             {
-                return BadRequest( new {ex.Message});
+                return BadRequest(new { ex.Message });
             }
         }
     }
