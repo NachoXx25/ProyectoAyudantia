@@ -1,0 +1,100 @@
+{
+	"info": {
+		"_postman_id": "af104dbf-6c1f-4a71-a35d-f5981e2e199c",
+		"name": "Proyecto LinkedIn Devs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33657530"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"%AjcQZ9SfH@sHFJokHswwk9lJ8Bg0GCmfP5.sMaa2-h9fAt2yoK8CsTkZiMfBs8nZQBKotWfg7P0.g4MclhpXclR3.u.zCMdJiovXkUxWaouGOVsLFvGzOZuFGlnFUNVKYseFCglwUYkGdBUOULWPpqUA\",\r\n  \"password\": \"string\",\r\n  \"rememberMe\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/Auth/Login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"Auth",
+								"Login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"9tm73U639N2W9Pnpc_daveRxSH+mM0cE0@-FSd1cPHaY.hW8jMsRAM2qB5tsBdHPRo8hXPX3.wIhjsrjJbIQEjzuOnTYN\",\r\n  \"password\": \"Zotk9bk7QzZuSQcEGTSY\",\r\n  \"confirmPassword\": \"CGJVdlChKer5XgAEQ271ivYdc5XLYN\",\r\n  \"nickName\": \"string\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/Auth/Register",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"Auth",
+								"Register"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "http://localhost:5013",
+			"type": "string"
+		}
+	]
+}
