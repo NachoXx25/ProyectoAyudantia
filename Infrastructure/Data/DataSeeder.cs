@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Proyecto_web_api.Domain.Models;
 
@@ -11,16 +12,20 @@ namespace Proyecto_web_api.Infrastructure.Data
             {
                 var context = scope.ServiceProvider.GetRequiredService<DataContext>();
                 var logger = scope.ServiceProvider.GetRequiredService<ILogger<DataSeeder>>();
-
+                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
                 try
                 {
                     if(!await context.Roles.AnyAsync())
                     {
-                        await context.Roles.AddRangeAsync(
-                          new Role { Name = "Free" },
-                          new Role { Name = "Premium" }
-                        );
-                        await context.SaveChangesAsync();
+                        var roles = new[] { "Free", "Premium" };
+                        foreach(var roleName in roles)
+                        {
+                            if (!await roleManager.RoleExistsAsync(roleName))
+                            {
+                                var role = new Role { Name = roleName };
+                                await roleManager.CreateAsync(role);
+                            }
+                        }
                     }
 
                     if(!await context.ReactionTypes.AnyAsync())

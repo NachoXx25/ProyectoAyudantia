@@ -12,8 +12,8 @@ using Proyecto_web_api.Infrastructure.Data;
 namespace Proyecto_web_api.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20250313211516_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250314011606_Seeders")]
+    partial class Seeders
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -422,6 +422,9 @@ namespace Proyecto_web_api.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean");
 
+                    b.Property<int>("RoleId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
 
@@ -440,6 +443,8 @@ namespace Proyecto_web_api.Migrations
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
+
+                    b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -671,6 +676,17 @@ namespace Proyecto_web_api.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Proyecto_web_api.Domain.Models.User", b =>
+                {
+                    b.HasOne("Proyecto_web_api.Domain.Models.Role", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("Proyecto_web_api.Domain.Models.UserProfile", b =>
