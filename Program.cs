@@ -21,6 +21,17 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddIdentity<User, Role>().AddEntityFrameworkStores<DataContext>().AddDefaultTokenProviders();
 
+//Añade el servicio de CORS para habilitar request desde el puerto predeterminado de Next.js
+builder.Services.AddCors(options => 
+{
+    options.AddDefaultPolicy(
+        builder => {
+            builder.WithOrigins("http://localhost:3000");
+            builder.AllowAnyHeader();
+            builder.AllowAnyMethod();
+        });
+});
+
 //Alcance de servicios
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
@@ -72,7 +83,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-
+app.UseCors();
 app.UseSwagger();
 app.UseSwaggerUI();
 app.UseAuthorization();
