@@ -24,6 +24,12 @@ namespace Proyecto_web_api.Application.Services.Implements
             _roleManager = roleManager;
             _tokenService = tokenService;
         }
+
+        /// <summary>
+        /// Función que permite a un usuario Loguearse
+        /// </summary>
+        /// <param name="loginDTO">Credenciales del usuario.</param>
+        /// <returns>Token JWT en caso de éxito o error en caso de fracaso.</returns>
         public async Task<object> Login(LoginDTO loginDTO)
         {
             //Buscamos al usuario por su email
@@ -73,6 +79,11 @@ namespace Proyecto_web_api.Application.Services.Implements
             }
         }
 
+        /// <summary>
+        /// Método que registra un usuario en el sistema.
+        /// </summary>
+        /// <param name="registerDTO">Credenciales del usuario.</param>
+        /// <returns>Token JWT en caso de éxito o error en caso de fracaso.</returns>
         public async Task<object> Register(RegisterDTO registerDTO)
         {
             var role = await _roleManager.FindByNameAsync("Free") ?? throw new Exception("Error en el sistema, vuelva a intentarlo más tarde.");

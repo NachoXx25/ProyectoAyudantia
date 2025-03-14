@@ -11,6 +11,13 @@ namespace Proyecto_web_api.Application.Services.Implements
 {
     public class TokenService : ITokenService
     {
+
+        /// <summary>
+        /// Método que crea un token JWT para un usuario.
+        /// </summary>
+        /// <param name="user">Usuario</param>
+        /// <param name="days">Duración del token en días</param>
+        /// <returns>Toekn JWT</returns>
         public Task<string> CreateToken(User user, int days)
         {
             var Claims = new List<Claim>(){

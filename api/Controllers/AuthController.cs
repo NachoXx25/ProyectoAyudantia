@@ -16,6 +16,11 @@ namespace Proyecto_web_api.api.Controllers
             _authService = authService;
         }
 
+        /// <summary>
+        /// Función que permite a un usuario Loguearse
+        /// </summary>
+        /// <param name="login">Credenciales del usuario.</param>
+        /// <returns>Token JWT en caso de éxito o error en caso de fracaso.</returns>
         [HttpPost("Login")]
         public async Task<IActionResult> Login(LoginDTO login)
         {
@@ -33,7 +38,11 @@ namespace Proyecto_web_api.api.Controllers
             }
         }
 
-
+        /// <summary>
+        /// Método que registra un usuario en el sistema.
+        /// </summary>
+        /// <param name="register">Credenciales del usuario.</param>
+        /// <returns>Token JWT en caso de éxito o error en caso de fracaso.</returns>
         [HttpPost("Register")]
         public async Task<IActionResult> Register(RegisterDTO register)
         {

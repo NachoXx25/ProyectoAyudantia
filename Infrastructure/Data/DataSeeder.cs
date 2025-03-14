@@ -15,6 +15,7 @@ namespace Proyecto_web_api.Infrastructure.Data
                 var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
                 try
                 {
+                    //Añadir roles
                     if(!await context.Roles.AnyAsync())
                     {
                         var roles = new[] { "Free", "Premium" };
@@ -27,7 +28,7 @@ namespace Proyecto_web_api.Infrastructure.Data
                             }
                         }
                     }
-
+                    //Añadir los tipos de reacciones
                     if(!await context.ReactionTypes.AnyAsync())
                     {
                         await context.ReactionTypes.AddRangeAsync(
