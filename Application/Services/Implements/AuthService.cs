@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Proyecto_web_api.Application.DTOs.AuthDTOs;
 using Proyecto_web_api.Application.Services.Interfaces;
 using Proyecto_web_api.Domain.Models;
+using Serilog;
 
 namespace Proyecto_web_api.Application.Services.Implements
 {
@@ -34,7 +35,7 @@ namespace Proyecto_web_api.Application.Services.Implements
         {
             //Buscamos al usuario por su email
             var user = await _userManager.FindByEmailAsync(loginDTO.Email);
-
+            
             if(user == null) throw new Exception("Usuario o contraseña incorrectos.");
             //La cuenta está bloqueada?
             if(await _userManager.IsLockedOutAsync(user))

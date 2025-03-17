@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Proyecto_web_api.Application.DTOs.AuthDTOs;
 using Proyecto_web_api.Application.Services.Interfaces;
+using Serilog;
 
 namespace Proyecto_web_api.api.Controllers
 {
@@ -34,6 +35,7 @@ namespace Proyecto_web_api.api.Controllers
             }
             catch(Exception ex)
             {
+                Log.Error(ex.Message);
                 return BadRequest(new { ex.Message });
             }
         }

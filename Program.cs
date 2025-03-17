@@ -6,12 +6,16 @@ using Proyecto_web_api.Application.Services.Implements;
 using Proyecto_web_api.Application.Services.Interfaces;
 using Proyecto_web_api.Domain.Models;
 using Proyecto_web_api.Infrastructure.Data;
+using Serilog;
+using Serilog.Events;
 
 DotEnv.Load();
 var builder = WebApplication.CreateBuilder(args);
 
+
 builder.Services.AddDbContext<DataContext>(options => 
-    options.UseNpgsql(EnvReader.GetStringValue("PostgreSQLConnection")));
+options.UseNpgsql(EnvReader.GetStringValue("PostgreSQLConnection")));
+
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -39,7 +43,10 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 
 //Alacance de de repositorios
 
-
+// Configurar Serilog
+builder.Host.UseSerilog((context, services, configuration) => configuration
+    .ReadFrom.Configuration(context.Configuration)
+    .ReadFrom.Services(services));
 
 builder.Services.Configure<IdentityOptions>(options =>
     {
@@ -64,14 +71,20 @@ builder.Services.Configure<IdentityOptions>(options =>
 var app = builder.Build();
 
 //Configuración para los seeders
-
-using (var scope = app.Services.CreateScope())
+try{
+    using (var scope = app.Services.CreateScope())
+    {
+        var services = scope.ServiceProvider;
+        var dbContext = services.GetRequiredService<DataContext>();
+        dbContext.Database.Migrate();
+        await DataSeeder.Initialize(services);
+    }
+}catch(Exception ex)
 {
-    var services = scope.ServiceProvider;
-    var dbContext = services.GetRequiredService<DataContext>();
-    dbContext.Database.Migrate();
-    await DataSeeder.Initialize(services);
+    Log.Fatal($"Ha ocurrido un error lanzando la aplicación: {ex.Message}");
+    return;
 }
+
 
 
 
@@ -82,6 +95,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 
 app.UseCors();
 app.UseSwagger();
