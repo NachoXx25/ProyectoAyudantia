@@ -1,7 +1,10 @@
+using System.Text;
 using dotenv.net;
 using dotenv.net.Utilities;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Proyecto_web_api.Application.Services.Implements;
 using Proyecto_web_api.Application.Services.Interfaces;
 using Proyecto_web_api.Domain.Models;
@@ -41,6 +44,22 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 
 
+// Configuración de autenticación, valida en cada request si el token es valido (siempre y cuando se envíe un token en la cabecera)
+builder.Services.AddAuthentication( options => 
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options => 
+{
+    options.TokenValidationParameters = new TokenValidationParameters 
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(EnvReader.GetStringValue("JWTSecretKey"))),
+        ValidateLifetime = true,
+    };
+});
+
 //Alacance de de repositorios
 
 // Configurar Serilog
@@ -71,19 +90,15 @@ builder.Services.Configure<IdentityOptions>(options =>
 var app = builder.Build();
 
 //Configuración para los seeders
-try{
-    using (var scope = app.Services.CreateScope())
-    {
-        var services = scope.ServiceProvider;
-        var dbContext = services.GetRequiredService<DataContext>();
-        dbContext.Database.Migrate();
-        await DataSeeder.Initialize(services);
-    }
-}catch(Exception ex)
+using (var scope = app.Services.CreateScope())
 {
-    Log.Fatal($"Ha ocurrido un error lanzando la aplicación: {ex.Message}");
-    return;
+    var services = scope.ServiceProvider;
+    var dbContext = services.GetRequiredService<DataContext>();
+    dbContext.Database.Migrate();
+    await DataSeeder.Initialize(services);
 }
+
+
 
 
 
@@ -100,8 +115,8 @@ if (app.Environment.IsDevelopment())
 app.UseCors();
 app.UseSwagger();
 app.UseSwaggerUI();
-app.UseAuthorization();
 app.UseAuthentication();
+app.UseAuthorization();
 app.MapControllers();
 app.UseHttpsRedirection();
 app.Run();
