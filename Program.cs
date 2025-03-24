@@ -9,8 +9,9 @@ using Proyecto_web_api.Application.Services.Implements;
 using Proyecto_web_api.Application.Services.Interfaces;
 using Proyecto_web_api.Domain.Models;
 using Proyecto_web_api.Infrastructure.Data;
+using Proyecto_web_api.Infrastructure.Repositories.Implements;
+using Proyecto_web_api.Infrastructure.Repositories.Interfaces;
 using Serilog;
-using Serilog.Events;
 
 DotEnv.Load();
 var builder = WebApplication.CreateBuilder(args);
@@ -42,7 +43,10 @@ builder.Services.AddCors(options =>
 //Alcance de servicios
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 
+//Alcance de repositorios
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 
 // Configuración de autenticación, valida en cada request si el token es valido (siempre y cuando se envíe un token en la cabecera)
 builder.Services.AddAuthentication( options => 
@@ -55,8 +59,11 @@ builder.Services.AddAuthentication( options =>
     options.TokenValidationParameters = new TokenValidationParameters 
     {
         ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(EnvReader.GetStringValue("JWTSecretKey"))),
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(EnvReader.GetStringValue("JWT_SECRET"))),
         ValidateLifetime = true,
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ClockSkew = TimeSpan.Zero 
     };
 });
 
@@ -86,6 +93,7 @@ builder.Services.Configure<IdentityOptions>(options =>
         options.Lockout.AllowedForNewUsers = true;
     }
 );
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -111,12 +119,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-
+app.UseHttpsRedirection();
 app.UseCors();
-app.UseSwagger();
-app.UseSwaggerUI();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-app.UseHttpsRedirection();
 app.Run();
