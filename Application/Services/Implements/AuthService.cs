@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
+using Proyecto_web_api.Application.DTOs.AccountDTOs;
 using Proyecto_web_api.Application.DTOs.AuthDTOs;
 using Proyecto_web_api.Application.Services.Interfaces;
 using Proyecto_web_api.Domain.Models;
+using Proyecto_web_api.Infrastructure.Repositories.Interfaces;
 using Serilog;
 
 namespace Proyecto_web_api.Application.Services.Implements
@@ -12,6 +14,7 @@ namespace Proyecto_web_api.Application.Services.Implements
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<Role> _roleManager;
         private readonly ITokenService _tokenService;
+        private readonly IAccountRepository _accountRepository;
         private static readonly Dictionary<string, string> ErrorTranslations = new ()
         {
             {"DuplicateUserName", "El nombre de usuario ya está en uso"},
@@ -19,11 +22,12 @@ namespace Proyecto_web_api.Application.Services.Implements
             {"InvalidUserName", "El nombre de usuario contiene caracteres inválidos"}
         };
 
-        public AuthService (UserManager<User> userManager, RoleManager<Role> roleManager, ITokenService tokenService) 
+        public AuthService (UserManager<User> userManager, RoleManager<Role> roleManager, ITokenService tokenService, IAccountRepository accountRepository) 
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _tokenService = tokenService;
+            _accountRepository = accountRepository;
         }
 
         /// <summary>
@@ -102,7 +106,7 @@ namespace Proyecto_web_api.Application.Services.Implements
             if(result.Succeeded) 
             {
                 await _userManager.AddToRoleAsync(user, "Free");
-                //todo:Llamado a crear perfil
+                await _accountRepository.CreateProfile(user.UserName, user.Id);
                 return await _tokenService.CreateToken(user,1);
             }
             return new AuthErrorDTO 

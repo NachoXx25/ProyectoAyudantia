@@ -3,18 +3,19 @@ using Microsoft.AspNetCore.Identity;
 using Proyecto_web_api.Application.DTOs.AccountDTOs;
 using Proyecto_web_api.Application.Services.Interfaces;
 using Proyecto_web_api.Domain.Models;
+using Proyecto_web_api.Infrastructure.Repositories.Interfaces;
 
 namespace Proyecto_web_api.Application.Services.Implements
 {
     public class AccountService : IAccountService
     {
-        private readonly ITokenService _tokenService;
         private readonly UserManager<User> _userManager;
+        private readonly IAccountRepository _accountRepository;
 
-        public AccountService(ITokenService tokenService, UserManager<User> userManager)
+        public AccountService(UserManager<User> userManager, IAccountRepository accountRepository)
         {
-            _tokenService = tokenService;
             _userManager = userManager;
+            _accountRepository = accountRepository;
         }
 
         /// <summary>

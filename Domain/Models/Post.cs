@@ -18,8 +18,8 @@ namespace Proyecto_web_api.Domain.Models
         public ICollection<Reaction> Reactions { get; set; } = [];
         public ICollection<Comment> Comments  { get; set; } = [];
 
-        public DateTime CreatedAt { get; set; } = TimeZoneInfo.ConvertTime(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("Pacific SA Standard Time"));
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        public DateTime UpdatedAt { get; set; } = TimeZoneInfo.ConvertTime(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("Pacific SA Standard Time"));
+        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     }
 }
