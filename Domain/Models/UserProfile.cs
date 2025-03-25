@@ -26,7 +26,7 @@ namespace Proyecto_web_api.Domain.Models
         public string NickName { get; set; } = string.Empty;
 
         public string ProfilePicture { get; set; } = string.Empty;
-        public bool IsProfilePicturoPublic { get; set; } = true;
+        public bool IsProfilePicturePublic { get; set; } = true;
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 

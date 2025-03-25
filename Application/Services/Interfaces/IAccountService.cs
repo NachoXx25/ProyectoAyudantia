@@ -10,5 +10,12 @@ namespace Proyecto_web_api.Application.Services.Interfaces
         /// <param name="changePasswordDTO">Contraseña actual y nueva contraseña</param>
         /// <returns>Mensaje de exito o de error</returns>
         Task<string> ChangePassword(ChangePasswordDTO changePasswordDTO);
+
+        /// <summary>
+        /// Edita el perfil del usuario
+        /// </summary>
+        /// <param name="profileDTO">Atributos del perfil</param>
+        /// <returns>Mensaje de exito o error</returns>
+        Task<string> EditProfile(ProfileDTO profileDTO);
     }
 }

@@ -32,5 +32,23 @@ namespace Proyecto_web_api.Application.Services.Implements
             await _userManager.ChangePasswordAsync(user,changePasswordDTO.OldPassword, changePasswordDTO.NewPassword);
             return "Contraseña cambiada con éxito.";
         }
+
+        /// <summary>
+        /// Edita el perfil del usuario
+        /// </summary>
+        /// <param name="profileDTO">Atributos del perfil</param>
+        /// <returns>Mensaje de exito o error</returns>
+        public async Task<string> EditProfile(ProfileDTO profileDTO)
+        {
+            try
+            {
+                var user = await _userManager.FindByIdAsync(profileDTO.UserdId.ToString()) ?? throw new Exception("Error en el sistema, vuelva a intentarlo más tarde.");
+                var result = await _accountRepository.EditProfile(profileDTO);
+                return result;
+            }catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }
