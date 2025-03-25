@@ -16,7 +16,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"email\": \"%AjcQZ9SfH@sHFJokHswwk9lJ8Bg0GCmfP5.sMaa2-h9fAt2yoK8CsTkZiMfBs8nZQBKotWfg7P0.g4MclhpXclR3.u.zCMdJiovXkUxWaouGOVsLFvGzOZuFGlnFUNVKYseFCglwUYkGdBUOULWPpqUA\",\r\n  \"password\": \"string\",\r\n  \"rememberMe\": true\r\n}",
+							"raw": "{\r\n  \"email\": \"r.hgjTE4cF%4h6Hz3I9jW.HkEuSv_@D7DJg1bQJrfs2f.Agg.qUtnmteAuHDxkjmfMySytunaTqyiIhf\",\r\n  \"password\": \"string\",\r\n  \"rememberMe\": true\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -44,7 +44,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"email\": \"9tm73U639N2W9Pnpc_daveRxSH+mM0cE0@-FSd1cPHaY.hW8jMsRAM2qB5tsBdHPRo8hXPX3.wIhjsrjJbIQEjzuOnTYN\",\r\n  \"password\": \"Zotk9bk7QzZuSQcEGTSY\",\r\n  \"confirmPassword\": \"CGJVdlChKer5XgAEQ271ivYdc5XLYN\",\r\n  \"nickName\": \"string\"\r\n}",
+							"raw": "{\r\n  \"email\": \"kjP2QUvI8vE.vnp.RfVkmEN.c.utE89M6TjPEx9A@lBb4Y-amHT3ge8qknT4vZdM.zCUALOvVOYyNFblHclzpkJnXNlMkmWeseoZSTxbBXrVyiUwsLBVJYbLQjWwkfsqeptPCZOqnlyRCOCblzwkTuAmiGM\",\r\n  \"password\": \"E0fiDNKzY\",\r\n  \"confirmPassword\": \"z65Z\",\r\n  \"nickName\": \"string\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -60,6 +60,128 @@
 								"api",
 								"Auth",
 								"Register"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Account",
+			"item": [
+				{
+					"name": "Edit Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "FirstName",
+									"value": "Name",
+									"type": "text"
+								},
+								{
+									"key": "IsFirstNamePublic",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "LastName",
+									"value": "LastName",
+									"type": "text"
+								},
+								{
+									"key": "IsLastNamePublic",
+									"value": "false",
+									"type": "text"
+								},
+								{
+									"key": "NickName",
+									"value": "UserName",
+									"type": "text"
+								},
+								{
+									"key": "Bio",
+									"value": "Bio",
+									"type": "text"
+								},
+								{
+									"key": "IsBioPublic",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "ProfilePicture",
+									"value": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCbhFR-ytLp22G23fV0yO4qxFms-wBJMCY2g&s",
+									"type": "text"
+								},
+								{
+									"key": "IsProfilePicturePublic",
+									"value": "false",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/api/Account/EditProfile",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"Account",
+								"EditProfile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change Password",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"oldPassword\": \"string\",\r\n  \"newPassword\": \"lwI6vyg2dZ6o2TK6JwO0\",\r\n  \"confirmPassword\": \"6VTYF7Nu7A1mUjwfmPeXfZP12n6DVs30fBTn5wuQLMTumxf5IVyci0Tj8Uok865TSmm5HJJdPSVx\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/Account/ChangePassword",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"Account",
+								"ChangePassword"
 							]
 						}
 					},
