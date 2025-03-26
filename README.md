@@ -48,7 +48,7 @@ To run this project, you will need to add the following environment variables to
 
 `PostgreSQLConnection`=your_db_connection_type_here
 
-`JWT_SECRET`=your_db_host_here
+`JWT_SECRET`=your_jwt_secret_here
 
 
 # Usage
