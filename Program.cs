@@ -1,17 +1,25 @@
+using System.Text;
 using dotenv.net;
 using dotenv.net.Utilities;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Proyecto_web_api.Application.Services.Implements;
 using Proyecto_web_api.Application.Services.Interfaces;
 using Proyecto_web_api.Domain.Models;
 using Proyecto_web_api.Infrastructure.Data;
+using Proyecto_web_api.Infrastructure.Repositories.Implements;
+using Proyecto_web_api.Infrastructure.Repositories.Interfaces;
+using Serilog;
 
 DotEnv.Load();
 var builder = WebApplication.CreateBuilder(args);
 
+
 builder.Services.AddDbContext<DataContext>(options => 
-    options.UseNpgsql(EnvReader.GetStringValue("PostgreSQLConnection")));
+options.UseNpgsql(EnvReader.GetStringValue("PostgreSQLConnection")));
+
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -35,11 +43,36 @@ builder.Services.AddCors(options =>
 //Alcance de servicios
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 
+//Alcance de repositorios
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+
+// Configuración de autenticación, valida en cada request si el token es valido (siempre y cuando se envíe un token en la cabecera)
+builder.Services.AddAuthentication( options => 
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options => 
+{
+    options.TokenValidationParameters = new TokenValidationParameters 
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(EnvReader.GetStringValue("JWT_SECRET"))),
+        ValidateLifetime = true,
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ClockSkew = TimeSpan.Zero 
+    };
+});
 
 //Alacance de de repositorios
 
-
+// Configurar Serilog
+builder.Host.UseSerilog((context, services, configuration) => configuration
+    .ReadFrom.Configuration(context.Configuration)
+    .ReadFrom.Services(services));
 
 builder.Services.Configure<IdentityOptions>(options =>
     {
@@ -60,11 +93,11 @@ builder.Services.Configure<IdentityOptions>(options =>
         options.Lockout.AllowedForNewUsers = true;
     }
 );
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
 //Configuración para los seeders
-
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -72,7 +105,6 @@ using (var scope = app.Services.CreateScope())
     dbContext.Database.Migrate();
     await DataSeeder.Initialize(services);
 }
-
 
 
 // Configure the HTTP request pipeline.
@@ -83,11 +115,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors();
-app.UseSwagger();
-app.UseSwaggerUI();
-app.UseAuthorization();
-app.UseAuthentication();
-app.MapControllers();
 app.UseHttpsRedirection();
+app.UseCors();
+app.UseAuthentication();
+app.UseAuthorization();
+app.MapControllers();
 app.Run();

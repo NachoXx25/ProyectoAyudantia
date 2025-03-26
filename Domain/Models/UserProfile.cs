@@ -13,22 +13,23 @@ namespace Proyecto_web_api.Domain.Models
 
         public string FirstName { get; set; } = string.Empty;
 
-        public bool IsFirstNamePublic { get; set; }
+        public bool IsFirstNamePublic { get; set; } = true;
 
         public string LastName { get; set; } = string.Empty;
 
-        public bool IsLastNamePublic { get; set; }    
+        public bool IsLastNamePublic { get; set; } = true;
 
         public string Bio { get; set; } = string.Empty;
 
-        public bool IsBioPublic { get; set; }
+        public bool IsBioPublic { get; set; } = true;
 
         public string NickName { get; set; } = string.Empty;
 
         public string ProfilePicture { get; set; } = string.Empty;
+        public bool IsProfilePicturePublic { get; set; } = true;
 
-        public DateTime CreatedAt { get; set; } = TimeZoneInfo.ConvertTime(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("Pacific SA Standard Time"));
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        public DateTime UpdatedAt { get; set; } = TimeZoneInfo.ConvertTime(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("Pacific SA Standard Time"));
+        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     }
 }

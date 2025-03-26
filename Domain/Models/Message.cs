@@ -21,6 +21,6 @@ namespace Proyecto_web_api.Domain.Models
 
         public required string Content { get; set; }
 
-        public DateTime SentAt { get; set; } = TimeZoneInfo.ConvertTime(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("Pacific SA Standard Time"));
+        public DateTime SentAt { get; set; } = DateTime.UtcNow;
     }
 }
