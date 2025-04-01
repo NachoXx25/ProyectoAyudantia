@@ -17,7 +17,7 @@ namespace Proyecto_web_api.Application.Services.Implements
         /// </summary>
         /// <param name="user">Usuario</param>
         /// <param name="days">Duración del token en días</param>
-        /// <returns>Toekn JWT</returns>
+        /// <returns>Token JWT</returns>
         public Task<string> CreateToken(User user, int days)
         {
             var Claims = new List<Claim>(){
