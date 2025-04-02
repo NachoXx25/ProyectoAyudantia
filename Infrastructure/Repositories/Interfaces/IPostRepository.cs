@@ -20,5 +20,13 @@ namespace Proyecto_web_api.Infrastructure.Repositories.Interfaces
         /// <param name="post">Post a crear</param>
         /// <returns>Mensaje de éxito o error.</returns>
         Task<string> createPostDTO(Post post);
+
+        /// <summary>
+        /// Archiva o desarchiva un post
+        /// </summary>
+        /// <param name="postId">Id del post a eliminar</param>
+        /// <param name="UserId">Id del usuario que elimina el post</param>
+        /// <returns>Mensaje de éxito o error.</returns> 
+        Task<string> ArchiveOrUnarchivePost(int postId, int UserId);
     }
 }

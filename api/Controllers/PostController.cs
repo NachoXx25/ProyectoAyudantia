@@ -47,6 +47,10 @@ namespace Proyecto_web_api.api.Controllers
             }
         }
 
+        /// <summary>
+        /// Obtiene todos los posts de un usuario
+        /// </summary>
+        /// <returns>Post con la información del usuario y el conteo total.</returns>
         [HttpPost("CreatePost")]
         [Authorize]
         public async Task<IActionResult> CreatePost([FromForm] CreatePostDTO postDTO)
@@ -61,10 +65,25 @@ namespace Proyecto_web_api.api.Controllers
                 int.TryParse(userId, out int Id);
                 postDTO.UserId = Id;
                 var result = await _postService.createPostDTO(postDTO);
-                return Ok(result);
+                return Ok(new {result});
             }catch(Exception ex)
             {
                 return BadRequest("Error al crear el post: " + ex.Message);
+            }
+        }
+
+        [HttpPatch("ArchiveOrUnarchivePost/{postId}")]
+        [Authorize]
+        public async Task<IActionResult> ArchiveOrUnarchivePost(int postId)
+        {
+            try
+            {
+                var UserIdClaim = User.FindFirst("Id")?.Value;
+                if(UserIdClaim.IsNullOrEmpty() || !int.TryParse(UserIdClaim?.ToString(), out int userId)) throw new Exception("Algo falló en la autenticación del usuario."); 
+                return Ok(new { result = await _postService.ArchiveOrUnarchivePost(postId, userId)});
+            }catch(Exception ex)
+            {
+                return BadRequest(new { ex.Message });
             }
         }
     }

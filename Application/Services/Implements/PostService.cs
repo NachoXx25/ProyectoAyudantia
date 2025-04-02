@@ -2,6 +2,7 @@ using Proyecto_web_api.Application.DTOs.PostDTOs;
 using Proyecto_web_api.Application.Services.Interfaces;
 using Proyecto_web_api.Domain.Models;
 using Proyecto_web_api.Infrastructure.Repositories.Interfaces;
+using Serilog;
 
 namespace Proyecto_web_api.Application.Services.Implements
 {
@@ -57,8 +58,28 @@ namespace Proyecto_web_api.Application.Services.Implements
             }
             catch (Exception ex)
             {
+                Log.Error(ex, "Error al crear el post: {Message}", ex.Message);
                 return $"Error al crear el post: {ex.Message}";
             }
+        }
+
+        /// <summary>
+        /// Archiva o desarchiva un post
+        /// </summary>
+        /// <param name="postId">Id del post a eliminar</param>
+        /// <param name="UserId">Id del usuario que elimina el post</param>
+        /// <returns>Mensaje de éxito o error.</returns>
+        public async Task<string> ArchiveOrUnarchivePost(int postId, int UserId)
+        {
+            try
+            {
+                return await _postRepository.ArchiveOrUnarchivePost(postId, UserId); 
+            }catch(Exception ex)
+            {   
+                Log.Error("Ha ocurrido un error en la acción {Message}", ex.Message);
+                throw new Exception(ex.Message);
+            }
+            throw new NotImplementedException();
         }
     }
 }

@@ -3,6 +3,7 @@ using Proyecto_web_api.Application.DTOs.PostDTOs;
 using Proyecto_web_api.Domain.Models;
 using Proyecto_web_api.Infrastructure.Data;
 using Proyecto_web_api.Infrastructure.Repositories.Interfaces;
+using Serilog;
 
 namespace Proyecto_web_api.Infrastructure.Repositories.Implements
 {
@@ -30,6 +31,7 @@ namespace Proyecto_web_api.Infrastructure.Repositories.Implements
                 Content = p.Content ?? "",
                 CreatedAt = p.CreatedAt,
                 UpdatedAt = p.UpdatedAt,
+                IsArchived = p.IsArchived,
                 Files = p.Files.Select(f => new PostFileDTO{
                     FileId = f.Id,
                     UrlFile = f.FileUrl,
@@ -58,14 +60,32 @@ namespace Proyecto_web_api.Infrastructure.Repositories.Implements
                     await _context.Posts.AddAsync(post);
                     await _context.SaveChangesAsync();
                     await transaction.CommitAsync();
+                    Log.Information("Post creado con éxito: {PostId}", post.Id);
                     return "Post creado con éxito.";
                 }
                 catch (Exception ex)
                 {
                     await transaction.RollbackAsync();
+                    Log.Error(ex, "Error al crear el post: {Message}", ex.Message);
                     return $"Error al crear el post: {ex.Message}";
                 }
             }
+        }
+
+        /// <summary>
+        /// Elimina un post (soft delete)
+        /// </summary>
+        /// <param name="postId">Id del post a eliminar</param>
+        /// <param name="UserId">Id del usuario que elimina el post</param>
+        /// <returns>Mensaje de éxito o error.</returns>
+        public async Task<string> ArchiveOrUnarchivePost(int postId, int UserId)
+        {
+            var post = await _context.Posts.FindAsync(postId) ?? throw new Exception("La publicación especificada no existe.");
+            if(post.AuthorId != UserId) throw new Exception("No puedes eliminar esta publicación.");
+            post.IsArchived = !post.IsArchived;
+            await _context.SaveChangesAsync();
+            if(post.IsArchived) return "Publicación archivada con éxito.";
+            return "Publicación Desarchivada con éxito.";
         }
     }
 }

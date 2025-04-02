@@ -12,6 +12,7 @@ namespace Proyecto_web_api.Domain.Models
         public User Author { get; set; } = null!;
 
         public string? Content { get; set; }
+        public bool IsArchived { get; set; }
 
         public ICollection<PostFile> Files { get; set; } = [];
 

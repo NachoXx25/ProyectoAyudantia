@@ -2,6 +2,7 @@ using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using dotenv.net.Utilities;
 using Proyecto_web_api.Application.Services.Interfaces;
+using Serilog;
 
 namespace Proyecto_web_api.Application.Services.Implements
 {
@@ -34,6 +35,17 @@ namespace Proyecto_web_api.Application.Services.Implements
         /// <returns>Resultado de cloudinary</returns>
         public async Task<ImageUploadResult> AddFile(IFormFile file)
         {
+            var fileExtension = Path.GetExtension(file.FileName);
+            if (fileExtension != ".jpg" && fileExtension != ".png" && fileExtension != ".jpeg" && fileExtension != ".gif" && fileExtension != ".webp" && fileExtension != ".avif" && fileExtension != ".svg" && fileExtension != ".heic" && fileExtension != ".mp4" && fileExtension != ".mov" && fileExtension != ".avi" && fileExtension != ".wmv" && fileExtension != ".flv" && fileExtension != ".mkv")
+            {
+                throw new Exception("El archivo no es una imagen o video valido (.jpg, .png, .jpeg, .gif, .webp, .avif, .svg, .heic, .mp4, .mov, .avi, .wmv, .flv o .mkv)");
+            }
+
+            if (file.Length > 10 * 1024 * 1024)
+            {
+                throw new Exception($"El archivo {file.Name} es demasiado grande (10MB maximo)");
+            }
+
             var UploadResult = new ImageUploadResult();
             if(file.Length > 0)
             {
@@ -42,6 +54,7 @@ namespace Proyecto_web_api.Application.Services.Implements
                     File = new FileDescription(file.FileName, file.OpenReadStream()),
                     Transformation = new Transformation().Width(1000).Crop("scale").Chain().Quality("auto").Chain().FetchFormat("auto"), Folder = "Ayudantia"
                 };
+                Log.Information($"Subiendo archivo a Cloudinary: {file.FileName}");
                 UploadResult = await _cloudinary.UploadAsync(uploadParams);
             }
             return UploadResult;
@@ -55,6 +68,7 @@ namespace Proyecto_web_api.Application.Services.Implements
         public async Task<DeletionResult> DeleteFile(string publicId)
         {
             var deleteParams = new DeletionParams(publicId);
+            Log.Information($"Eliminando archivo de Cloudinary: {publicId}");
             var result = await _cloudinary.DestroyAsync(deleteParams);
             return result;
         }
