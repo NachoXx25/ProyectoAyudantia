@@ -50,7 +50,8 @@ namespace Proyecto_web_api.Application.Services.Implements
                     {
                         var result = await _fileService.AddFile(file);
                         post.Files.Add(new PostFile {
-                            FileUrl = result.SecureUrl.AbsoluteUri
+                            FileUrl = result.SecureUrl.AbsoluteUri,
+                            PublicId = result.PublicId,
                         });
                     }
                 }
@@ -59,7 +60,7 @@ namespace Proyecto_web_api.Application.Services.Implements
             catch (Exception ex)
             {
                 Log.Error(ex, "Error al crear el post: {Message}", ex.Message);
-                return $"Error al crear el post: {ex.Message}";
+                return ex.Message;
             }
         }
 
@@ -77,9 +78,18 @@ namespace Proyecto_web_api.Application.Services.Implements
             }catch(Exception ex)
             {   
                 Log.Error("Ha ocurrido un error en la acción {Message}", ex.Message);
-                throw new Exception(ex.Message);
+                return ex.Message;
             }
-            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Actualiza un post
+        /// </summary>
+        /// <param name="postDTO">DTO del post a actualizar</param>
+        /// <returns>Mensaje de éxito o error.</returns>
+        public async Task<string> UpdatePost(UpdatePostDTO postDTO)
+        {
+            return await _postRepository.UpdatePost(postDTO);
         }
     }
 }

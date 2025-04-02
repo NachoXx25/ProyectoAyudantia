@@ -72,6 +72,11 @@ namespace Proyecto_web_api.api.Controllers
             }
         }
 
+        /// <summary>
+        /// Obtiene todos los posts de un usuario
+        /// </summary>
+        /// <param name="postId">Id del post a eliminar.</param>
+        /// <returns>Post con la información del usuario y el conteo total.</returns>
         [HttpPatch("ArchiveOrUnarchivePost/{postId}")]
         [Authorize]
         public async Task<IActionResult> ArchiveOrUnarchivePost(int postId)
@@ -84,6 +89,29 @@ namespace Proyecto_web_api.api.Controllers
             }catch(Exception ex)
             {
                 return BadRequest(new { ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Actualiza un post
+        /// </summary>
+        /// <param name="postDTO">DTO del post a actualizar</param>
+        /// <returns>Mensaje de éxito o error.</returns>
+        [HttpPut("UpdatePost")]
+        [Authorize]
+        public async Task<IActionResult> UpdatePost([FromForm] UpdatePostDTO postDTO)
+        {
+            try
+            {
+                if(!string.IsNullOrWhiteSpace(postDTO.Content) && postDTO.Content.Length > 500) throw new Exception("El contenido del post no puede exceder los 500 caracteres.");
+                string? userId = User.FindFirst("Id")?.Value;
+                int.TryParse(userId, out int Id);
+                postDTO.UserId = Id;
+                var result = await _postService.UpdatePost(postDTO);
+                return Ok(new {result});
+            }catch(Exception ex)
+            {
+                return BadRequest(new {ex.Message});
             }
         }
     }

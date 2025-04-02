@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Proyecto_web_api.Application.DTOs.PostDTOs;
+using Proyecto_web_api.Application.Services.Interfaces;
 using Proyecto_web_api.Domain.Models;
 using Proyecto_web_api.Infrastructure.Data;
 using Proyecto_web_api.Infrastructure.Repositories.Interfaces;
@@ -10,8 +11,10 @@ namespace Proyecto_web_api.Infrastructure.Repositories.Implements
     public class PostRepository : IPostRepository
     {
         private readonly DataContext _context;
-        public PostRepository(DataContext context)
+        private readonly IFileService _fileService;
+        public PostRepository(DataContext context, IFileService fileService)
         {
+            _fileService = fileService;
             _context = context;
         }
 
@@ -43,6 +46,7 @@ namespace Proyecto_web_api.Infrastructure.Repositories.Implements
                     UserReacted = group.Any(r => r.UserId == userId)
                 }).ToList()
             }).ToListAsync();
+            Log.Information("Se obtuvieron {PostCount} posts para el usuario {UserId}", posts.Count(), userId);
             return (posts, totalCount);
         }
 
@@ -84,8 +88,61 @@ namespace Proyecto_web_api.Infrastructure.Repositories.Implements
             if(post.AuthorId != UserId) throw new Exception("No puedes eliminar esta publicación.");
             post.IsArchived = !post.IsArchived;
             await _context.SaveChangesAsync();
+            Log.Information("Post archivado/desarchivado con éxito: {PostId}", post.Id);
             if(post.IsArchived) return "Publicación archivada con éxito.";
             return "Publicación Desarchivada con éxito.";
+        }
+
+        /// <summary>
+        /// Actualiza un post
+        /// </summary>
+        /// <param name="postDTO">DTO del post a actualizar</param>
+        /// <returns>Mensaje de éxito o error.</returns>
+        public async Task<string> UpdatePost(UpdatePostDTO postDTO)
+        {
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    if(string.IsNullOrWhiteSpace(postDTO.Content) && postDTO.Files.Count() == 0) throw new Exception("No se puede actualizar la publicación sin contenido o archivos.");
+                    var post = await _context.Posts.FindAsync(postDTO.PostId) ?? throw new Exception("La publicación especificada no existe.");
+                    if (post.AuthorId != postDTO.UserId) throw new Exception("No puedes editar esta publicación.");
+                    if (postDTO.Files != null){
+                        var existingFiles = await _context.PostFiles.Where(pf => pf.PostId == post.Id).ToListAsync();
+                        foreach (var existingFile in existingFiles)
+                        {
+                            _context.PostFiles.Remove(existingFile);
+                            await _fileService.DeleteFile(existingFile.PublicId);
+                        }
+                        Log.Information("Archivos eliminados con éxito para el post: {PostId}", post.Id);
+                        foreach (var file in postDTO.Files)
+                        {
+                            var fileUrl = await _fileService.AddFile(file);
+                            post.Files.Add(new PostFile
+                            {
+                                FileUrl = fileUrl.SecureUrl.AbsoluteUri,
+                                PublicId = fileUrl.PublicId,
+                                PostId = post.Id
+                            });
+                        }
+                        Log.Information("Archivos actualizados con éxito para el post: {PostId}", post.Id);
+                        await _context.SaveChangesAsync();
+                    }
+                    if(!string.IsNullOrWhiteSpace(postDTO.Content)){
+                        post.Content = postDTO.Content;
+                    }
+                    post.UpdatedAt = DateTime.UtcNow;
+                    await _context.SaveChangesAsync();
+                    await transaction.CommitAsync();
+                    return "Post actualizado con éxito.";
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync();
+                    Log.Error(ex, "Error al actualizar el post: {Message}", ex.Message);
+                    return ex.Message;
+                }
+            }
         }
     }
 }

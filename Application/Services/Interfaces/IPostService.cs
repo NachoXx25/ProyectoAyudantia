@@ -27,5 +27,12 @@ namespace Proyecto_web_api.Application.Services.Interfaces
         /// <param name="UserId">Id del usuario que elimina el post</param>
         /// <returns>Mensaje de éxito o error.</returns> 
         Task<string> ArchiveOrUnarchivePost(int postId, int UserId);
+
+        /// <summary>
+        /// Actualiza un post
+        /// </summary>
+        /// <param name="postDTO">DTO del post a actualizar</param>
+        /// <returns>Mensaje de éxito o error.</returns>
+        Task<string> UpdatePost(UpdatePostDTO postDTO);
     }
 }
