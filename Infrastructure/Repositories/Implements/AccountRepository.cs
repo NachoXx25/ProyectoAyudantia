@@ -1,4 +1,3 @@
-using System.Transactions;
 using Microsoft.EntityFrameworkCore;
 using Proyecto_web_api.Application.DTOs.AccountDTOs;
 using Proyecto_web_api.Application.Services.Interfaces;
@@ -111,6 +110,45 @@ namespace Proyecto_web_api.Infrastructure.Repositories.Implements
                 await transaction.RollbackAsync();
                 throw; 
             }
+        }
+
+        /// <summary>
+        /// Obtiene el perfil del usuario
+        /// </summary>
+        /// <param name="userId">Id del usuario</param>
+        /// <param name="userIdRequest">Id del usuario que solicita el perfil</param>
+        /// <returns>Perfil del usuario</returns>
+        public async Task<Object> GetUserProfile(int userId, int? userIdRequest)
+        {
+            var userProfile = await _context.UserProfiles.AsNoTrackingWithIdentityResolution().FirstOrDefaultAsync(up => up.UserId == userId) ?? throw new Exception("El perfil no existe.");
+            bool isOwnProfile = userIdRequest.HasValue && userIdRequest.Value == userId;
+            Object userProfileDTO;
+            if(isOwnProfile)
+            {
+                userProfileDTO = new UserProfileDTO
+                {
+                    NickName = userProfile.NickName,
+                    FirstName = userProfile.FirstName,
+                    LastName = userProfile.LastName,
+                    Bio = userProfile.Bio ,
+                    ProfilePicture = userProfile.ProfilePicture ,
+                    IsFirstNamePublic = userProfile.IsFirstNamePublic,
+                    IsLastNamePublic = userProfile.IsLastNamePublic,
+                    IsBioPublic = userProfile.IsBioPublic,
+                    IsProfilePicturePublic = userProfile.IsProfilePicturePublic
+                };
+            }
+            else{
+                userProfileDTO = new AnotherUserProfileDTO
+                {
+                    NickName = userProfile.NickName,
+                    FirstName = userProfile.IsFirstNamePublic ? userProfile.FirstName : null,
+                    LastName = userProfile.IsLastNamePublic ? userProfile.LastName : null,
+                    Bio = userProfile.IsBioPublic ? userProfile.Bio : null,
+                    ProfilePicture = userProfile.IsProfilePicturePublic ? userProfile.ProfilePicture : null
+                };
+            }
+            return userProfileDTO;
         }
     }
 }

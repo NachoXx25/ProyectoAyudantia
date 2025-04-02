@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using Proyecto_web_api.Domain.Models;
 
 namespace Proyecto_web_api.Application.DTOs.AccountDTOs
 {

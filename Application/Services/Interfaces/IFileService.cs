@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using CloudinaryDotNet.Actions;
 
 namespace Proyecto_web_api.Application.Services.Interfaces

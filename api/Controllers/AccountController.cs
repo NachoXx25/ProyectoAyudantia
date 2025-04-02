@@ -18,6 +18,26 @@ namespace Proyecto_web_api.api.Controllers
         }
 
         /// <summary>
+        /// Obtiene el perfil del usuario
+        /// </summary>
+        /// <param name="userId">Id del usuario</param>
+        /// <returns>Perfil del usuario</returns>
+        [HttpGet("GetUserProfile/{userId}")]
+        public async Task<IActionResult> GetUserProfile(int userId)
+        {
+            int? userIdClaim = int.TryParse(User.FindFirst("Id")?.Value, out int id) ? id : null;
+            try
+            {
+                var userProfile = await _accountService.GetUserProfile(userId, userIdClaim);
+                return Ok(userProfile);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
+        /// <summary>
         /// Cambia la contraseña del usuario
         /// </summary>
         /// <param name="changePasswordDTO">Contraseña actual y nueva contraseña</param>
