@@ -40,7 +40,7 @@ namespace Proyecto_web_api.Application.Services.Implements
                 var uploadParams = new ImageUploadParams()
                 {
                     File = new FileDescription(file.FileName, file.OpenReadStream()),
-                    Transformation = new Transformation().Height(500).Width(500).Crop("fill").Gravity("face"), Folder = "Ayudantia"
+                    Transformation = new Transformation().Width(1000).Crop("scale").Chain().Quality("auto").Chain().FetchFormat("auto"), Folder = "Ayudantia"
                 };
                 UploadResult = await _cloudinary.UploadAsync(uploadParams);
             }
