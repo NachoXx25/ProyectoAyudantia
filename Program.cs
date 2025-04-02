@@ -44,6 +44,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IFileService, FileService>();
 
 //Alcance de repositorios
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();

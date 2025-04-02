@@ -1,6 +1,7 @@
 using System.Transactions;
 using Microsoft.EntityFrameworkCore;
 using Proyecto_web_api.Application.DTOs.AccountDTOs;
+using Proyecto_web_api.Application.Services.Interfaces;
 using Proyecto_web_api.Domain.Models;
 using Proyecto_web_api.Infrastructure.Data;
 using Proyecto_web_api.Infrastructure.Repositories.Interfaces;
@@ -10,8 +11,10 @@ namespace Proyecto_web_api.Infrastructure.Repositories.Implements
     public class AccountRepository : IAccountRepository
     {
         private readonly DataContext _context;
-        public AccountRepository(DataContext context)
+        private readonly IFileService _fileService;
+        public AccountRepository(DataContext context, IFileService fileRepository)
         {
+            _fileService = fileRepository;
             _context = context;
         }
         
@@ -85,10 +88,14 @@ namespace Proyecto_web_api.Infrastructure.Repositories.Implements
                     currentProfile.IsBioPublic = profile.IsBioPublic;
                     hasChanges = true;
                 }
-                if(currentProfile.ProfilePicture != profile.ProfilePicture)
+                if(profile.ProfilePicture != null)
                 {
-                    currentProfile.ProfilePicture = profile.ProfilePicture;
-                    hasChanges = true;
+                    var file = await _fileService.AddFile(profile.ProfilePicture);
+                    if(currentProfile.ProfilePicture != file.SecureUrl.AbsoluteUri)
+                    {
+                        currentProfile.ProfilePicture = file.SecureUrl.AbsoluteUri;
+                        hasChanges = true;
+                    }
                 }
                 if(currentProfile.IsProfilePicturePublic != profile.IsProfilePicturePublic)
                 {
