@@ -50,7 +50,7 @@ namespace Proyecto_web_api.Infrastructure.Repositories.Interfaces
         /// </summary>
         /// <param name="PostId">Id del post</param>
         /// <returns>Lista de comentarios del post</returns>
-        Task<IEnumerable<CommentsDTO>> GetCommentsbByPostId(int PostId);
+        Task<IEnumerable<CommentsDTO>> GetCommentsByPostId(int PostId);
 
         /// <summary>
         /// Obtiene las reacciones de un post

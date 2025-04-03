@@ -109,11 +109,12 @@ namespace Proyecto_web_api.Application.Services.Implements
         /// </summary>
         /// <param name="PostId">Id del post</param>
         /// <returns>Lista de comentarios del post</returns>
-        public async Task<IEnumerable<CommentsDTO>> GetCommentsbByPostId(int PostId)
+        public async Task<(IEnumerable<CommentsDTO>, int TotalComments)> GetCommentsByPostId(int PostId)
         {
             try
             {
-                return await _postRepository.GetCommentsbByPostId(PostId);
+                var comments = await _postRepository.GetCommentsByPostId(PostId);
+                return (comments, comments.Count());
             }catch(Exception ex)
             {
                 Log.Error("Ha ocurrido un error mientras se obtenian los mensajes {Message}", ex.Message);
@@ -126,9 +127,17 @@ namespace Proyecto_web_api.Application.Services.Implements
         /// </summary>
         /// <param name="postId">Id del post</param>
         /// <returns>Lista de reacciones del post</returns>
-        public Task<IEnumerable<ReactionDTO>> GetReactionsByPostId(int postId)
+        public async Task<(IEnumerable<ReactionDTO>, int TotalReactions)> GetReactionsByPostId(int postId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var reactions = await _postRepository.GetReactionsByPostId(postId);
+                return (reactions, reactions.Count());
+            }catch(Exception ex)
+            {
+                Log.Error("Ha ocurrido un error mientras se obtenian las reacciones {Message}", ex.Message);
+                throw new Exception(ex.Message);
+            }
         }
     }
 }

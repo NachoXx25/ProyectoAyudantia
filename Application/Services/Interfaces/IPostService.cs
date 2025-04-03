@@ -49,13 +49,13 @@ namespace Proyecto_web_api.Application.Services.Interfaces
         /// </summary>
         /// <param name="PostId">Id del post</param>
         /// <returns>Lista de comentarios del post</returns>
-        Task<IEnumerable<CommentsDTO>> GetCommentsbByPostId(int PostId);
+        Task<(IEnumerable<CommentsDTO>, int TotalComments)> GetCommentsByPostId(int PostId);
 
         /// <summary>
         /// Obtiene las reacciones de un post
         /// </summary>
         /// <param name="postId">Id del post</param>
         /// <returns>Lista de reacciones del post</returns>
-        Task<IEnumerable<ReactionDTO>> GetReactionsByPostId(int postId);
+        Task<(IEnumerable<ReactionDTO>, int TotalReactions)> GetReactionsByPostId(int postId);
     }
 }

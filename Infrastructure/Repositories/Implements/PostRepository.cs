@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Microsoft.EntityFrameworkCore;
 using Proyecto_web_api.Application.DTOs.PostDTOs;
 using Proyecto_web_api.Application.Services.Interfaces;
@@ -198,18 +199,33 @@ namespace Proyecto_web_api.Infrastructure.Repositories.Implements
         /// </summary>
         /// <param name="PostId">Id del post</param>
         /// <returns>Lista de comentarios del post</returns>
-        public async Task<IEnumerable<CommentsDTO>> GetCommentsbByPostId(int PostId)
+        public async Task<IEnumerable<CommentsDTO>> GetCommentsByPostId(int PostId)
         {
-            var post = await _context.Posts.AsNoTracking().Include( p => p.Author).Include( p => p.Comments).FirstOrDefaultAsync( p => p.Id == PostId) ?? throw new Exception("La publicación especificada no existe.");
-            var userProfile = await _context.UserProfiles.AsNoTracking().FirstOrDefaultAsync( u => u.UserId == post.AuthorId) ?? throw new Exception("Error en el sistema, vuelva a intentarlo más tarde.");
             Log.Information("Obteniendo los comentarios del post {postId}", PostId);
-            return post.Comments.Select(comment => new CommentsDTO{
-                UserNickname = post.Author.UserName,
-                TotalComments = post.Comments.Count(),
-                UserProfilePicture = userProfile.IsProfilePicturePublic ? userProfile.ProfilePicture : null, 
-                Content = comment.Content,
-                CreatedAt = TimeZoneInfo.ConvertTime(comment.CreatedAt, TimeZoneInfo.FindSystemTimeZoneById("Pacific SA Standard Time")),
-            });
+           var comments = await _context.Comments
+                .Where(c => c.PostId == PostId)
+                .OrderByDescending(c => c.CreatedAt)
+                .Join(
+                    _context.UserProfiles,
+                    comment => comment.UserId,
+                    profile => profile.UserId,
+                    (comment, profile) => new { Comment = comment, Profile = profile }
+                )
+                .Join(
+                    _context.Users,
+                    joined => joined.Comment.UserId,
+                    user => user.Id,
+                    (joined, user) => new CommentsDTO
+                    {
+                        UserNickname = user.UserName,
+                        UserProfilePicture = joined.Profile.IsProfilePicturePublic ? joined.Profile.ProfilePicture : null,
+                        Content = joined.Comment.Content,
+                        CreatedAt = TimeZoneInfo.ConvertTime(joined.Comment.CreatedAt, 
+                                    TimeZoneInfo.FindSystemTimeZoneById("Pacific SA Standard Time")),
+                    }
+                )
+                .ToListAsync();
+            return comments;
         }
 
         /// <summary>
@@ -219,7 +235,28 @@ namespace Proyecto_web_api.Infrastructure.Repositories.Implements
         /// <returns>Lista de reacciones del post</returns>
         public async Task<IEnumerable<ReactionDTO>> GetReactionsByPostId(int postId)
         {
-            var post = await _context.Posts.AsNoTracking().Include( p => p.Author).FirstOrDefaultAsync(p => p.Id == postId) ?? throw new Exception();
+            if(!await _context.Posts.AnyAsync( p => p.Id == postId)) throw new Exception("La publicación especificada no existe.");
+            Log.Information("Obteniendo las reacciones del post {postId}", postId);
+            var reactions = await _context.Reactions
+            .Where( r => r.PostId == postId)
+            .OrderByDescending( r => r.CreatedAt)
+            .Join(
+                _context.UserProfiles,
+                reactions => reactions.UserId,
+                userProfile => userProfile.UserId,
+                ( reactions, UserProfile ) => new { Reactions = reactions, UserProfile = UserProfile}
+            )
+            .Join(
+                _context.Users,
+                joined => joined.Reactions.UserId,
+                user => user.Id,
+                (joined, user) => new ReactionDTO{
+                    UserNickName = user.UserName,
+                    UserProfilePicture = joined.UserProfile.IsProfilePicturePublic ? joined.UserProfile.ProfilePicture : null,
+                    ReactionType = joined.Reactions.ReactionType.Name
+                }
+            ).ToListAsync();
+            return reactions;
         }
     }
 }
