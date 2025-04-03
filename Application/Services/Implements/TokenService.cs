@@ -1,6 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
 using dotenv.net.Utilities;
 using Microsoft.IdentityModel.Tokens;
@@ -17,7 +16,7 @@ namespace Proyecto_web_api.Application.Services.Implements
         /// </summary>
         /// <param name="user">Usuario</param>
         /// <param name="days">Duración del token en días</param>
-        /// <returns>Toekn JWT</returns>
+        /// <returns>Token JWT</returns>
         public Task<string> CreateToken(User user, int days)
         {
             var Claims = new List<Claim>(){
@@ -28,10 +27,10 @@ namespace Proyecto_web_api.Application.Services.Implements
             };
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(EnvReader.GetStringValue("JWT_SECRET")));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
-
+            var chileanDateTime =  TimeZoneInfo.ConvertTime(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("Pacific SA Standard Time"));
             var token = new JwtSecurityToken(
                 claims: Claims,
-                expires: DateTime.UtcNow.AddDays(days),
+                expires: chileanDateTime.AddDays(days),
                 signingCredentials: creds
             );
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);

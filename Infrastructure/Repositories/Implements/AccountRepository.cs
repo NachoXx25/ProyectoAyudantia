@@ -1,6 +1,6 @@
-using System.Transactions;
 using Microsoft.EntityFrameworkCore;
 using Proyecto_web_api.Application.DTOs.AccountDTOs;
+using Proyecto_web_api.Application.Services.Interfaces;
 using Proyecto_web_api.Domain.Models;
 using Proyecto_web_api.Infrastructure.Data;
 using Proyecto_web_api.Infrastructure.Repositories.Interfaces;
@@ -10,8 +10,10 @@ namespace Proyecto_web_api.Infrastructure.Repositories.Implements
     public class AccountRepository : IAccountRepository
     {
         private readonly DataContext _context;
-        public AccountRepository(DataContext context)
+        private readonly IFileService _fileService;
+        public AccountRepository(DataContext context, IFileService fileRepository)
         {
+            _fileService = fileRepository;
             _context = context;
         }
         
@@ -85,10 +87,14 @@ namespace Proyecto_web_api.Infrastructure.Repositories.Implements
                     currentProfile.IsBioPublic = profile.IsBioPublic;
                     hasChanges = true;
                 }
-                if(currentProfile.ProfilePicture != profile.ProfilePicture)
+                if(profile.ProfilePicture != null)
                 {
-                    currentProfile.ProfilePicture = profile.ProfilePicture;
-                    hasChanges = true;
+                    var file = await _fileService.AddFile(profile.ProfilePicture);
+                    if(currentProfile.ProfilePicture != file.SecureUrl.AbsoluteUri)
+                    {
+                        currentProfile.ProfilePicture = file.SecureUrl.AbsoluteUri;
+                        hasChanges = true;
+                    }
                 }
                 if(currentProfile.IsProfilePicturePublic != profile.IsProfilePicturePublic)
                 {
@@ -104,6 +110,45 @@ namespace Proyecto_web_api.Infrastructure.Repositories.Implements
                 await transaction.RollbackAsync();
                 throw; 
             }
+        }
+
+        /// <summary>
+        /// Obtiene el perfil del usuario
+        /// </summary>
+        /// <param name="userId">Id del usuario</param>
+        /// <param name="userIdRequest">Id del usuario que solicita el perfil</param>
+        /// <returns>Perfil del usuario</returns>
+        public async Task<Object> GetUserProfile(int userId, int? userIdRequest)
+        {
+            var userProfile = await _context.UserProfiles.AsNoTrackingWithIdentityResolution().FirstOrDefaultAsync(up => up.UserId == userId) ?? throw new Exception("El perfil no existe.");
+            bool isOwnProfile = userIdRequest.HasValue && userIdRequest.Value == userId;
+            Object userProfileDTO;
+            if(isOwnProfile)
+            {
+                userProfileDTO = new UserProfileDTO
+                {
+                    NickName = userProfile.NickName,
+                    FirstName = userProfile.FirstName,
+                    LastName = userProfile.LastName,
+                    Bio = userProfile.Bio ,
+                    ProfilePicture = userProfile.ProfilePicture ,
+                    IsFirstNamePublic = userProfile.IsFirstNamePublic,
+                    IsLastNamePublic = userProfile.IsLastNamePublic,
+                    IsBioPublic = userProfile.IsBioPublic,
+                    IsProfilePicturePublic = userProfile.IsProfilePicturePublic
+                };
+            }
+            else{
+                userProfileDTO = new AnotherUserProfileDTO
+                {
+                    NickName = userProfile.NickName,
+                    FirstName = userProfile.IsFirstNamePublic ? userProfile.FirstName : null,
+                    LastName = userProfile.IsLastNamePublic ? userProfile.LastName : null,
+                    Bio = userProfile.IsBioPublic ? userProfile.Bio : null,
+                    ProfilePicture = userProfile.IsProfilePicturePublic ? userProfile.ProfilePicture : null
+                };
+            }
+            return userProfileDTO;
         }
     }
 }

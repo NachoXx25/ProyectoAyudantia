@@ -11,12 +11,27 @@
 			"item": [
 				{
 					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var res = pm.response.json();\r",
+									"\r",
+									"pm.environment.set(\"token\", res.token);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"email\": \"r.hgjTE4cF%4h6Hz3I9jW.HkEuSv_@D7DJg1bQJrfs2f.Agg.qUtnmteAuHDxkjmfMySytunaTqyiIhf\",\r\n  \"password\": \"string\",\r\n  \"rememberMe\": true\r\n}",
+							"raw": "{\r\n  \"email\": \"VoIq2.v71_j2d+frQCDWI37oc3_4NNE9+aWjne5jjm1RfuugiRzhM@3Ce0pMqRkXBpCdeq6Dbm-kv1.ovNzgRmKFqBEywyqfdmnBBTKWZYnIwpstpjqaqYWjMnQsulRPOuzSCOomAulUotNpescEFdcFdSqkIgdCrnvtvOdyS\",\r\n  \"password\": \"string\",\r\n  \"rememberMe\": true\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -39,6 +54,20 @@
 				},
 				{
 					"name": "Register",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var res = pm.response.json();\r",
+									"\r",
+									"pm.environment.set(\"token\", res.token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -71,6 +100,36 @@
 			"name": "Account",
 			"item": [
 				{
+					"name": "Get User Profile By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/Account/GetUserProfile/3",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"Account",
+								"GetUserProfile",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Edit Profile",
 					"request": {
 						"auth": {
@@ -78,7 +137,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "",
+									"value": "{{token}}",
 									"type": "string"
 								}
 							]
@@ -90,48 +149,53 @@
 							"formdata": [
 								{
 									"key": "FirstName",
-									"value": "Name",
+									"value": "José",
 									"type": "text"
 								},
 								{
 									"key": "IsFirstNamePublic",
 									"value": "true",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "LastName",
-									"value": "LastName",
+									"value": "Sepúlveda",
 									"type": "text"
 								},
 								{
 									"key": "IsLastNamePublic",
 									"value": "false",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "NickName",
-									"value": "UserName",
+									"value": "Sepu",
 									"type": "text"
 								},
 								{
 									"key": "Bio",
 									"value": "Bio",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "IsBioPublic",
 									"value": "true",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "ProfilePicture",
-									"value": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCbhFR-ytLp22G23fV0yO4qxFms-wBJMCY2g&s",
-									"type": "text"
+									"type": "file",
+									"src": []
 								},
 								{
 									"key": "IsProfilePicturePublic",
 									"value": "false",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								}
 							]
 						},
@@ -157,7 +221,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "",
+									"value": "{{token}}",
 									"type": "string"
 								}
 							]
@@ -182,6 +246,273 @@
 								"api",
 								"Account",
 								"ChangePassword"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Posts",
+			"item": [
+				{
+					"name": "Get All Posts",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/Post/GetAllPosts?page=1&pageSize=10",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"Post",
+								"GetAllPosts"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Own Posts",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/Post/GetOwnPosts?page=1&pageSize=10",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"Post",
+								"GetOwnPosts"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Comments By Post",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/Post/GetCommentsByPostId/2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"Post",
+								"GetCommentsByPostId",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Reactions By Post",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/Post/GetReactionsByPostId/2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"Post",
+								"GetReactionsByPostId",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Post",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "Content",
+									"value": "Your Content",
+									"type": "text"
+								},
+								{
+									"key": "Files",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/api/Post/CreatePost",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"Post",
+								"CreatePost"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Post",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "Content",
+									"value": "Your content",
+									"type": "text"
+								},
+								{
+									"key": "Files",
+									"type": "file",
+									"src": [],
+									"disabled": true
+								},
+								{
+									"key": "PostId",
+									"value": "The post Id",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/api/Post/UpdatePost",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"Post",
+								"UpdatePost"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Archive or Unarchive Post",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/Post/ArchiveOrUnarchivePost/3",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"Post",
+								"ArchiveOrUnarchivePost",
+								"3"
 							]
 						}
 					},

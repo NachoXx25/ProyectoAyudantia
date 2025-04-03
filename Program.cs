@@ -44,9 +44,12 @@ builder.Services.AddCors(options =>
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IFileService, FileService>();
+builder.Services.AddScoped<IPostService, PostService>();
 
 //Alcance de repositorios
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<IPostRepository, PostRepository>();
 
 // Configuración de autenticación, valida en cada request si el token es valido (siempre y cuando se envíe un token en la cabecera)
 builder.Services.AddAuthentication( options => 
@@ -115,9 +118,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+
 app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseHttpsRedirection();
 app.MapControllers();
 app.Run();

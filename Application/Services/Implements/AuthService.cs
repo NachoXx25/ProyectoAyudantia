@@ -1,11 +1,8 @@
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
-using Proyecto_web_api.Application.DTOs.AccountDTOs;
 using Proyecto_web_api.Application.DTOs.AuthDTOs;
 using Proyecto_web_api.Application.Services.Interfaces;
 using Proyecto_web_api.Domain.Models;
 using Proyecto_web_api.Infrastructure.Repositories.Interfaces;
-using Serilog;
 
 namespace Proyecto_web_api.Application.Services.Implements
 {

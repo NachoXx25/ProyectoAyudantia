@@ -11,5 +11,7 @@ namespace Proyecto_web_api.Domain.Models
         public Post Post { get; set; } = null!;
 
         public required string FileUrl { get; set; } 
+
+        public required string PublicId { get; set; }
     }
 }
