@@ -29,12 +29,13 @@ namespace Proyecto_web_api.Infrastructure.Repositories.Implements
         public async Task<(IEnumerable<OwnPostsDTO> Posts, int totalCount)> GetOwnPosts(int userId, int page, int pageSize)
         {
             var totalCount = await _context.Posts.CountAsync(p => p.AuthorId == userId);
+            var timeZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific SA Standard Time");
             var posts = await _context.Posts.Where( p => p.AuthorId == userId).Include( p => p.Files).Include( p => p.Reactions).ThenInclude( r => r.ReactionType).OrderByDescending( p => p.CreatedAt).Skip((page - 1) * pageSize).Take(pageSize).Select(p => new OwnPostsDTO
             {
                 PostId = p.Id,
                 Content = p.Content ?? "",
-                CreatedAt = TimeZoneInfo.ConvertTime(p.CreatedAt, TimeZoneInfo.FindSystemTimeZoneById("Pacific SA Standard Time")),
-                UpdatedAt = TimeZoneInfo.ConvertTime(p.UpdatedAt, TimeZoneInfo.FindSystemTimeZoneById("Pacific SA Standard Time")),
+                CreatedAt = TimeZoneInfo.ConvertTime(p.CreatedAt, timeZone),
+                UpdatedAt = TimeZoneInfo.ConvertTime(p.UpdatedAt, timeZone),
                 IsArchived = p.IsArchived,
                 Files = p.Files.Select(f => new PostFileDTO{
                     FileId = f.Id,
@@ -155,14 +156,15 @@ namespace Proyecto_web_api.Infrastructure.Repositories.Implements
         /// <returns>Post con la información del usuario y el conteo total.</returns>
         public async Task<(IEnumerable<AllPostsDTO> Posts, int? totalCount)> GetAllPosts(int userId, int page, int pageSize)
         {
+            var timeZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific SA Standard Time");
             if(userId == 0){
                 var visitorPosts = await _context.Posts.Where( p => p.IsArchived == false).OrderByDescending( p => p.CreatedAt).Include( p => p.Author).Include( p => p.Files).Include( p => p.Reactions).ThenInclude( r => r.ReactionType).Take(10).ToListAsync();
                 return (visitorPosts.Select(post => new AllPostsDTO {
                 PostId = post.Id,
                 Content = post.Content,
                 AuthorNickName = post.Author.UserName,
-                CreatedAt = TimeZoneInfo.ConvertTime(post.CreatedAt, TimeZoneInfo.FindSystemTimeZoneById("Pacific SA Standard Time")),
-                UpdatedAt = TimeZoneInfo.ConvertTime(post.UpdatedAt, TimeZoneInfo.FindSystemTimeZoneById("Pacific SA Standard Time")),
+                CreatedAt = TimeZoneInfo.ConvertTime(post.CreatedAt, timeZone),
+                UpdatedAt = TimeZoneInfo.ConvertTime(post.UpdatedAt, timeZone),
                 Files = post.Files.Select(f => new PostFileDTO {
                     FileId = f.Id,
                     UrlFile = f.FileUrl
@@ -180,8 +182,8 @@ namespace Proyecto_web_api.Infrastructure.Repositories.Implements
                 PostId = post.Id,
                 Content = post.Content,
                 AuthorNickName = post.Author.UserName,
-                CreatedAt = TimeZoneInfo.ConvertTime(post.CreatedAt, TimeZoneInfo.FindSystemTimeZoneById("Pacific SA Standard Time")),
-                UpdatedAt = TimeZoneInfo.ConvertTime(post.UpdatedAt, TimeZoneInfo.FindSystemTimeZoneById("Pacific SA Standard Time")),
+                CreatedAt = TimeZoneInfo.ConvertTime(post.CreatedAt, timeZone),
+                UpdatedAt = TimeZoneInfo.ConvertTime(post.UpdatedAt, timeZone),
                 Files = post.Files.Select(f => new PostFileDTO {
                     FileId = f.Id,
                     UrlFile = f.FileUrl
@@ -202,29 +204,29 @@ namespace Proyecto_web_api.Infrastructure.Repositories.Implements
         public async Task<IEnumerable<CommentsDTO>> GetCommentsByPostId(int PostId)
         {
             Log.Information("Obteniendo los comentarios del post {postId}", PostId);
-           var comments = await _context.Comments
-                .Where(c => c.PostId == PostId)
-                .OrderByDescending(c => c.CreatedAt)
-                .Join(
-                    _context.UserProfiles,
-                    comment => comment.UserId,
-                    profile => profile.UserId,
-                    (comment, profile) => new { Comment = comment, Profile = profile }
-                )
-                .Join(
-                    _context.Users,
-                    joined => joined.Comment.UserId,
-                    user => user.Id,
-                    (joined, user) => new CommentsDTO
-                    {
-                        UserNickname = user.UserName,
-                        UserProfilePicture = joined.Profile.IsProfilePicturePublic ? joined.Profile.ProfilePicture : null,
-                        Content = joined.Comment.Content,
-                        CreatedAt = TimeZoneInfo.ConvertTime(joined.Comment.CreatedAt, 
-                                    TimeZoneInfo.FindSystemTimeZoneById("Pacific SA Standard Time")),
-                    }
-                )
-                .ToListAsync();
+            var timeZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific SA Standard Time");
+            var comments = await _context.Comments
+                    .Where(c => c.PostId == PostId)
+                    .OrderByDescending(c => c.CreatedAt)
+                    .Join(
+                        _context.UserProfiles,
+                        comment => comment.UserId,
+                        profile => profile.UserId,
+                        (comment, profile) => new { Comment = comment, Profile = profile }
+                    )
+                    .Join(
+                        _context.Users,
+                        joined => joined.Comment.UserId,
+                        user => user.Id,
+                        (joined, user) => new CommentsDTO
+                        {
+                            UserNickname = user.UserName,
+                            UserProfilePicture = joined.Profile.IsProfilePicturePublic ? joined.Profile.ProfilePicture : null,
+                            Content = joined.Comment.Content,
+                            CreatedAt = TimeZoneInfo.ConvertTime(joined.Comment.CreatedAt, timeZone),
+                        }
+                    )
+                    .ToListAsync();
             return comments;
         }
 
