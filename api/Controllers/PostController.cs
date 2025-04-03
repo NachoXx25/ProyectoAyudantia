@@ -16,6 +16,12 @@ namespace Proyecto_web_api.api.Controllers
             _postService = postService;
         }
 
+        /// <summary>
+        /// Obtiene todos los posts de un usuario
+        /// </summary>
+        /// <param name="page">Número de página para paginación.</param>
+        /// <param name="pageSize">Número de elementos por página.</param>
+        /// <returns>Post con la información del usuario y el conteo total.</returns>
         [HttpGet("GetAllPosts")]
         [AllowAnonymous]
         public async Task<IActionResult> GetAllPosts([FromQuery] int page, int pageSize)
@@ -78,10 +84,37 @@ namespace Proyecto_web_api.api.Controllers
             try
             {
                 if (postId <= 0) return BadRequest("El id del post no puede ser menor o igual a cero.");
-                var result = await _postService.GetCommentsbByPostId(postId);
-                if(result.Count() == 0)
+                var result = await _postService.GetCommentsByPostId(postId);
+                if(result.Item1.Count() == 0)
                 {
                     return NotFound("¡Todavía no hay comentarios!");
+                }
+                else
+                {
+                    return Ok(new { result });
+                }
+            }catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Obtiene las reacciones de un post
+        /// </summary>
+        /// <param name="postId">Id del post</param>
+        /// <returns>Lista de reacciones del post</returns>
+        [HttpGet("GetReactionsByPostId/{postId}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetReactionsByPostId(int postId)
+        {
+            try
+            {
+                if (postId <= 0) return BadRequest("El id del post no puede ser menor o igual a cero.");
+                var result = await _postService.GetReactionsByPostId(postId);
+                if(result.Item1.Count() == 0)
+                {
+                    return NotFound("¡Todavía no hay reacciones!");
                 }
                 else
                 {
