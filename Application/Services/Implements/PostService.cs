@@ -91,5 +91,17 @@ namespace Proyecto_web_api.Application.Services.Implements
         {
             return await _postRepository.UpdatePost(postDTO);
         }
+
+        /// <summary>
+        /// Obtiene todos los posts de la aplicación
+        /// </summary>
+        /// <param name="userId">Id del usuario</param>
+        /// <param name="page">Número de página para paginación.</param>
+        /// <param name="pageSize">Número de elementos por página.</param>
+        /// <returns>Post con la información del usuario y el conteo total.</returns>
+        public async Task<(IEnumerable<AllPostsDTO> Posts, int totalCount)> GetAllPosts(int? userId, int page, int pageSize)
+        {
+            return await _postRepository.GetAllPosts(userId, page, pageSize);
+        }
     }
 }

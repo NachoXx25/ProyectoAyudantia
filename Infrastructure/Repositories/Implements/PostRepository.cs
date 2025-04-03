@@ -144,5 +144,34 @@ namespace Proyecto_web_api.Infrastructure.Repositories.Implements
                 }
             }
         }
+
+        /// <summary>
+        /// Obtiene todos los posts de la aplicación
+        /// </summary>
+        /// <param name="userId">Id del usuario</param>
+        /// <param name="page">Número de página para paginación.</param>
+        /// <param name="pageSize">Número de elementos por página.</param>
+        /// <returns>Post con la información del usuario y el conteo total.</returns>
+        public async Task<(IEnumerable<AllPostsDTO> Posts, int totalCount)> GetAllPosts(int? userId, int page, int pageSize)
+        {
+            var posts = await _context.Posts.Where( p => p.IsArchived == false).Include( p => p.Author).Include( p => p.Files).Include( p => p.Reactions).ThenInclude( r => r.ReactionType).ToListAsync();
+            var totalCount = posts.Count();
+            return (posts.Select(post => new AllPostsDTO {
+                PostId = post.Id,
+                Content = post.Content,
+                AuthorNickName = post.Author.UserName,
+                CreatedAt = post.CreatedAt,
+                UpdatedAt = post.UpdatedAt,
+                Files = post.Files.Select(f => new PostFileDTO {
+                    FileId = f.Id,
+                    UrlFile = f.FileUrl
+                }).ToList(),
+                Reactions = post.Reactions.GroupBy( re => re.ReactionTypeId).Select( group => new ReactionSummaryDTO {
+                    Name = group.First().ReactionType.Name,
+                    Count = group.Count(),
+                    UserReacted = group.Any( g => g.UserId == userId)
+                }).ToList()
+            }).ToList(), totalCount);
+        }
     }
 }

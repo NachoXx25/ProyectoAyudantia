@@ -16,6 +16,27 @@ namespace Proyecto_web_api.api.Controllers
             _postService = postService;
         }
 
+        [HttpGet("GetAllPosts")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetAllPosts([FromQuery] int page, int pageSize)
+        {
+            if (page <= 0) return BadRequest("El número de página no puede ser menor o igual a cero.");
+            if (pageSize <= 0) return BadRequest("El tamaño de la página no puede ser menor o igual a cero.");  
+            string? userId = User.FindFirst("Id")?.Value;
+            int.TryParse(userId, out int Id);
+            var result = await _postService.GetAllPosts(Id, page, pageSize);
+            if(result.Posts.Count() == 0)
+            {
+                return NotFound("¡Todavía no hay publicaciones!");
+            }
+            else{
+                return Ok(new {
+                    result.Posts,
+                    result.totalCount
+                });
+            }
+        }
+
         /// <summary>
         /// Obtiene todos los posts de un usuario
         /// </summary>
@@ -27,9 +48,7 @@ namespace Proyecto_web_api.api.Controllers
         public async Task<IActionResult> GetOwnPosts([FromQuery] int page, int pageSize)
         {
             if (page <= 0) return BadRequest("El número de página no puede ser menor o igual a cero.");
-            if(!int.TryParse(page.ToString(), out page)) return BadRequest("El número de página no es válido.");
             if (pageSize <= 0) return BadRequest("El tamaño de la página no puede ser menor o igual a cero.");
-            if(!int.TryParse(pageSize.ToString(), out pageSize)) return BadRequest("El tamaño de la página no es válido.");
             string? userId = User.FindFirst("Id")?.Value;
             int.TryParse(userId, out int Id);
             var result = await _postService.GetOwnPosts(Id, page, pageSize);

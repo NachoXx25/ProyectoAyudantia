@@ -48,11 +48,12 @@ namespace Proyecto_web_api.Application.Services.Implements
 
             var UploadResult = new ImageUploadResult();
             if(file.Length > 0)
-            {
+            {   
                 var uploadParams = new ImageUploadParams()
                 {
                     File = new FileDescription(file.FileName, file.OpenReadStream()),
-                    Transformation = new Transformation().Width(1000).Crop("scale").Chain().Quality("auto").Chain().FetchFormat("auto"), Folder = "Ayudantia"
+                    Transformation = new Transformation().Width(1000).Crop("scale").Chain().Quality("auto").Chain().FetchFormat("auto"), Folder = "Ayudantia",
+                    PublicId = file.FileName,
                 };
                 Log.Information($"Subiendo archivo a Cloudinary: {file.FileName}");
                 UploadResult = await _cloudinary.UploadAsync(uploadParams);
