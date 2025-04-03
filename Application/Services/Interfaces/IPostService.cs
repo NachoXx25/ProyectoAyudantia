@@ -43,5 +43,19 @@ namespace Proyecto_web_api.Application.Services.Interfaces
         /// <param name="postDTO">DTO del post a actualizar</param>
         /// <returns>Mensaje de éxito o error.</returns>
         Task<string> UpdatePost(UpdatePostDTO postDTO);
+
+        /// <summary>
+        /// Obtiene los comentarios de un post
+        /// </summary>
+        /// <param name="PostId">Id del post</param>
+        /// <returns>Lista de comentarios del post</returns>
+        Task<IEnumerable<CommentsDTO>> GetCommentsbByPostId(int PostId);
+
+        /// <summary>
+        /// Obtiene las reacciones de un post
+        /// </summary>
+        /// <param name="postId">Id del post</param>
+        /// <returns>Lista de reacciones del post</returns>
+        Task<IEnumerable<ReactionDTO>> GetReactionsByPostId(int postId);
     }
 }

@@ -103,5 +103,32 @@ namespace Proyecto_web_api.Application.Services.Implements
         {
             return await _postRepository.GetAllPosts(userId, page, pageSize);
         }
+
+        /// <summary>
+        /// Obtiene los comentarios de un post
+        /// </summary>
+        /// <param name="PostId">Id del post</param>
+        /// <returns>Lista de comentarios del post</returns>
+        public async Task<IEnumerable<CommentsDTO>> GetCommentsbByPostId(int PostId)
+        {
+            try
+            {
+                return await _postRepository.GetCommentsbByPostId(PostId);
+            }catch(Exception ex)
+            {
+                Log.Error("Ha ocurrido un error mientras se obtenian los mensajes {Message}", ex.Message);
+                throw new Exception(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Obtiene las reacciones de un post
+        /// </summary>
+        /// <param name="postId">Id del post</param>
+        /// <returns>Lista de reacciones del post</returns>
+        public Task<IEnumerable<ReactionDTO>> GetReactionsByPostId(int postId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

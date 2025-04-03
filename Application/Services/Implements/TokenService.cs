@@ -27,10 +27,10 @@ namespace Proyecto_web_api.Application.Services.Implements
             };
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(EnvReader.GetStringValue("JWT_SECRET")));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
-
+            var chileanDateTime =  TimeZoneInfo.ConvertTime(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("Pacific SA Standard Time"));
             var token = new JwtSecurityToken(
                 claims: Claims,
-                expires: DateTime.UtcNow.AddDays(days),
+                expires: chileanDateTime.AddDays(days),
                 signingCredentials: creds
             );
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);

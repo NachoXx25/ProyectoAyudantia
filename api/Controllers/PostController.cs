@@ -67,6 +67,33 @@ namespace Proyecto_web_api.api.Controllers
         }
 
         /// <summary>
+        /// Obtiene los comentarios de un post
+        /// </summary>
+        /// <param name="postId">Id del post</param>
+        /// <returns>Lista de comentarios del post</returns>
+        [HttpGet("GetCommentsByPostId/{postId}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetCommentsByPostId(int postId)
+        {
+            try
+            {
+                if (postId <= 0) return BadRequest("El id del post no puede ser menor o igual a cero.");
+                var result = await _postService.GetCommentsbByPostId(postId);
+                if(result.Count() == 0)
+                {
+                    return NotFound("¡Todavía no hay comentarios!");
+                }
+                else
+                {
+                    return Ok(new { result });
+                }
+            }catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        /// <summary>
         /// Obtiene todos los posts de un usuario
         /// </summary>
         /// <returns>Post con la información del usuario y el conteo total.</returns>

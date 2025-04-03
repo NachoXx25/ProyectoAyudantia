@@ -44,5 +44,19 @@ namespace Proyecto_web_api.Infrastructure.Repositories.Interfaces
         /// <param name="pageSize">Número de elementos por página.</param>
         /// <returns>Post con la información del usuario y el conteo total.</returns>
         Task<(IEnumerable<AllPostsDTO> Posts, int? totalCount)> GetAllPosts(int userId, int page, int pageSize);
+
+        /// <summary>
+        /// Obtiene los comentarios de un post
+        /// </summary>
+        /// <param name="PostId">Id del post</param>
+        /// <returns>Lista de comentarios del post</returns>
+        Task<IEnumerable<CommentsDTO>> GetCommentsbByPostId(int PostId);
+
+        /// <summary>
+        /// Obtiene las reacciones de un post
+        /// </summary>
+        /// <param name="postId">Id del post</param>
+        /// <returns>Lista de reacciones del post</returns>
+        Task<IEnumerable<ReactionDTO>> GetReactionsByPostId(int postId);
     }
 }

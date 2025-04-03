@@ -32,8 +32,8 @@ namespace Proyecto_web_api.Infrastructure.Repositories.Implements
             {
                 PostId = p.Id,
                 Content = p.Content ?? "",
-                CreatedAt = p.CreatedAt,
-                UpdatedAt = p.UpdatedAt,
+                CreatedAt = TimeZoneInfo.ConvertTime(p.CreatedAt, TimeZoneInfo.FindSystemTimeZoneById("Pacific SA Standard Time")),
+                UpdatedAt = TimeZoneInfo.ConvertTime(p.UpdatedAt, TimeZoneInfo.FindSystemTimeZoneById("Pacific SA Standard Time")),
                 IsArchived = p.IsArchived,
                 Files = p.Files.Select(f => new PostFileDTO{
                     FileId = f.Id,
@@ -160,8 +160,8 @@ namespace Proyecto_web_api.Infrastructure.Repositories.Implements
                 PostId = post.Id,
                 Content = post.Content,
                 AuthorNickName = post.Author.UserName,
-                CreatedAt = post.CreatedAt,
-                UpdatedAt = post.UpdatedAt,
+                CreatedAt = TimeZoneInfo.ConvertTime(post.CreatedAt, TimeZoneInfo.FindSystemTimeZoneById("Pacific SA Standard Time")),
+                UpdatedAt = TimeZoneInfo.ConvertTime(post.UpdatedAt, TimeZoneInfo.FindSystemTimeZoneById("Pacific SA Standard Time")),
                 Files = post.Files.Select(f => new PostFileDTO {
                     FileId = f.Id,
                     UrlFile = f.FileUrl
@@ -179,8 +179,8 @@ namespace Proyecto_web_api.Infrastructure.Repositories.Implements
                 PostId = post.Id,
                 Content = post.Content,
                 AuthorNickName = post.Author.UserName,
-                CreatedAt = post.CreatedAt,
-                UpdatedAt = post.UpdatedAt,
+                CreatedAt = TimeZoneInfo.ConvertTime(post.CreatedAt, TimeZoneInfo.FindSystemTimeZoneById("Pacific SA Standard Time")),
+                UpdatedAt = TimeZoneInfo.ConvertTime(post.UpdatedAt, TimeZoneInfo.FindSystemTimeZoneById("Pacific SA Standard Time")),
                 Files = post.Files.Select(f => new PostFileDTO {
                     FileId = f.Id,
                     UrlFile = f.FileUrl
@@ -191,6 +191,35 @@ namespace Proyecto_web_api.Infrastructure.Repositories.Implements
                     UserReacted = group.Any( g => g.UserId == userId)
                 }).ToList()
             }).ToList(), totalCount);
+        }
+
+        /// <summary>
+        /// Obtiene los comentarios de un post
+        /// </summary>
+        /// <param name="PostId">Id del post</param>
+        /// <returns>Lista de comentarios del post</returns>
+        public async Task<IEnumerable<CommentsDTO>> GetCommentsbByPostId(int PostId)
+        {
+            var post = await _context.Posts.AsNoTracking().Include( p => p.Author).Include( p => p.Comments).FirstOrDefaultAsync( p => p.Id == PostId) ?? throw new Exception("La publicación especificada no existe.");
+            var userProfile = await _context.UserProfiles.AsNoTracking().FirstOrDefaultAsync( u => u.UserId == post.AuthorId) ?? throw new Exception("Error en el sistema, vuelva a intentarlo más tarde.");
+            Log.Information("Obteniendo los comentarios del post {postId}", PostId);
+            return post.Comments.Select(comment => new CommentsDTO{
+                UserNickname = post.Author.UserName,
+                TotalComments = post.Comments.Count(),
+                UserProfilePicture = userProfile.IsProfilePicturePublic ? userProfile.ProfilePicture : null, 
+                Content = comment.Content,
+                CreatedAt = TimeZoneInfo.ConvertTime(comment.CreatedAt, TimeZoneInfo.FindSystemTimeZoneById("Pacific SA Standard Time")),
+            });
+        }
+
+        /// <summary>
+        /// Obtiene las reacciones de un post
+        /// </summary>
+        /// <param name="postId">Id del post</param>
+        /// <returns>Lista de reacciones del post</returns>
+        public async Task<IEnumerable<ReactionDTO>> GetReactionsByPostId(int postId)
+        {
+            var post = await _context.Posts.AsNoTracking().Include( p => p.Author).FirstOrDefaultAsync(p => p.Id == postId) ?? throw new Exception();
         }
     }
 }
