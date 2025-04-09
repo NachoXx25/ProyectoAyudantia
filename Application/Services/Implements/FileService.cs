@@ -15,9 +15,9 @@ namespace Proyecto_web_api.Application.Services.Implements
             _logger = logger;
             try{
                 var account = new Account(
-                EnvReader.GetStringValue("CloudName"),
-                EnvReader.GetStringValue("ApiKey"),
-                EnvReader.GetStringValue("ApiSecret")
+                    EnvReader.GetStringValue("CloudName"),
+                    EnvReader.GetStringValue("ApiKey"),
+                    EnvReader.GetStringValue("ApiSecret")
                 );
                 _cloudinary = new Cloudinary(account);
                 _logger.LogInformation("Cloudinary inicializado correctamente.");
@@ -73,17 +73,5 @@ namespace Proyecto_web_api.Application.Services.Implements
             var result = await _cloudinary.DestroyAsync(deleteParams);
             return result;
         }
-
-        /// <summary>
-        /// Sube un archivo a Cloudinary.
-        /// </summary>
-        /// <param name="File">El archivo a subir.</param>
-        /// <returns>El resultado de la subida.</returns>
-        public Task<UploadResult> UploadFileAsync(IFormFile File)
-        {
-            throw new NotImplementedException();
-        }
     }
-
-
 }

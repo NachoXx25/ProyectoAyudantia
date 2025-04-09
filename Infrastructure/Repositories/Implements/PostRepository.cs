@@ -177,7 +177,7 @@ namespace Proyecto_web_api.Infrastructure.Repositories.Implements
                 }).ToList(), null);
             }
             var posts = await _context.Posts.Where( p => p.IsArchived == false).OrderByDescending( p => p.CreatedAt).Include( p => p.Author).Include( p => p.Files).Include( p => p.Reactions).ThenInclude( r => r.ReactionType).Skip((page-1) * pageSize).Take(pageSize).ToListAsync();
-            var totalCount = _context.Posts.Count();
+            var totalCount = _context.Posts.Where( p => p.IsArchived == false).Count();
             return (posts.Select(post => new AllPostsDTO {
                 PostId = post.Id,
                 Content = post.Content,
@@ -240,24 +240,24 @@ namespace Proyecto_web_api.Infrastructure.Repositories.Implements
             if(!await _context.Posts.AnyAsync( p => p.Id == postId)) throw new Exception("La publicación especificada no existe.");
             Log.Information("Obteniendo las reacciones del post {postId}", postId);
             var reactions = await _context.Reactions
-            .Where( r => r.PostId == postId)
-            .OrderByDescending( r => r.CreatedAt)
-            .Join(
-                _context.UserProfiles,
-                reactions => reactions.UserId,
-                userProfile => userProfile.UserId,
-                ( reactions, UserProfile ) => new { Reactions = reactions, UserProfile = UserProfile}
-            )
-            .Join(
-                _context.Users,
-                joined => joined.Reactions.UserId,
-                user => user.Id,
-                (joined, user) => new ReactionDTO{
-                    UserNickName = user.UserName,
-                    UserProfilePicture = joined.UserProfile.IsProfilePicturePublic ? joined.UserProfile.ProfilePicture : null,
-                    ReactionType = joined.Reactions.ReactionType.Name
-                }
-            ).ToListAsync();
+                .Where( r => r.PostId == postId)
+                .OrderByDescending( r => r.CreatedAt)
+                .Join(
+                    _context.UserProfiles,
+                    reactions => reactions.UserId,
+                    userProfile => userProfile.UserId,
+                    ( reactions, UserProfile ) => new { Reactions = reactions, UserProfile = UserProfile}
+                )
+                .Join(
+                    _context.Users,
+                    joined => joined.Reactions.UserId,
+                    user => user.Id,
+                    (joined, user) => new ReactionDTO{
+                        UserNickName = user.UserName,
+                        UserProfilePicture = joined.UserProfile.IsProfilePicturePublic ? joined.UserProfile.ProfilePicture : null,
+                        ReactionType = joined.Reactions.ReactionType.Name
+                    }
+                ).ToListAsync();
             return reactions;
         }
     }

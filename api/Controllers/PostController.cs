@@ -60,7 +60,7 @@ namespace Proyecto_web_api.api.Controllers
             var result = await _postService.GetOwnPosts(Id, page, pageSize);
             if(result.Posts.Count() == 0)
             {
-                return NotFound("¡Todavía no hay publicaciones!");
+                return NotFound(new { result = "¡Todavía no hay publicaciones!" });
             }
             else
             {
@@ -87,7 +87,7 @@ namespace Proyecto_web_api.api.Controllers
                 var result = await _postService.GetCommentsByPostId(postId);
                 if(result.Item1.Count() == 0)
                 {
-                    return NotFound("¡Todavía no hay comentarios!");
+                    return NotFound(new { result = "¡Todavía no hay comentarios!"});
                 }
                 else
                 {
@@ -114,7 +114,7 @@ namespace Proyecto_web_api.api.Controllers
                 var result = await _postService.GetReactionsByPostId(postId);
                 if(result.Item1.Count() == 0)
                 {
-                    return NotFound("¡Todavía no hay reacciones!");
+                    return NotFound(new { result = "¡Todavía no hay reacciones!"});
                 }
                 else
                 {

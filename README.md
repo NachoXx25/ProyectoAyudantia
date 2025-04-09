@@ -50,10 +50,16 @@ To run this project, you will need to add the following environment variables to
 
 `JWT_SECRET`=your_jwt_secret_here
 
+`CloudName`=your_cloud_name_here
+
+`ApiKey`=your_api_key_here
+
+`ApiSecret`=your_api_secret_here
+
 
 # Usage
 You can test the API using the Postman collection file included in this repository: Proyecto LinkedIn Devs.postman_collection.json.
 
 
-## Authors Github
+## Author Github
 - [@Ignacio Valenzuela](https://github.com/NachoXx25)
