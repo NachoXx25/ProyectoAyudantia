@@ -5,13 +5,6 @@ namespace Proyecto_web_api.Application.Services.Interfaces
     public interface IFileService
     {
         /// <summary>
-        /// Sube un archivo a Cloudinary.
-        /// </summary>
-        /// <param name="File">El archivo a subir.</param>
-        /// <returns>El resultado de la subida.</returns>
-        Task<UploadResult> UploadFileAsync(IFormFile File);
-
-        /// <summary>
         /// Sube una foto a Cloudinary.
         /// </summary>
         /// <param name="file">Foto a subir</param>
