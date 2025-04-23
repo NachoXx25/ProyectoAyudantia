@@ -44,12 +44,13 @@ namespace Proyecto_web_api.Application.Services.Implements
         /// Obtiene los mensajes de un chat.
         /// </summary>
         /// <param name="ChatId">El ID del chat.</param>
+        /// <param name="UserId">El ID del usuario.</param>
         /// <returns>La información del chat con los mensajes.</returns>
-        public async Task<InfoChatDTO> GetMessagesByChat(int ChatId)
+        public async Task<InfoChatDTO> GetMessagesByChat(int ChatId, int UserId)
         {
             try
             {
-                return await _chatRepository.GetMessagesByChat(ChatId);
+                return await _chatRepository.GetMessagesByChat(ChatId, UserId);
             }
             catch (Exception ex)
             {

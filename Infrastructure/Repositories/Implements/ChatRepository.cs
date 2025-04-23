@@ -58,10 +58,12 @@ namespace Proyecto_web_api.Infrastructure.Repositories.Implements
         /// Obtiene los mensajes de un chat.
         /// </summary>
         /// <param name="ChatId">El ID del chat.</param>
+        /// <param name="UserId">El ID del usuario.</param>
         /// <returns>La información del chat con los mensajes.</returns>
-        public async Task<InfoChatDTO> GetMessagesByChat(int ChatId)
+        public async Task<InfoChatDTO> GetMessagesByChat(int ChatId, int UserId)
         {
             Chat chat = await _context.Chats.Include(c => c.Messages).AsNoTracking().FirstOrDefaultAsync(c => c.Id == ChatId) ?? throw new Exception("Error en el sistema, vuelva a intentarlo más tarde.");
+            if(chat.RepliedId != UserId && chat.SenderId != UserId) throw new Exception("No tienes permiso para ver este chat.");
             var timeZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific SA Standard Time");
             return new InfoChatDTO
             {

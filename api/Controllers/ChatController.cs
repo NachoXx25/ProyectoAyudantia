@@ -50,7 +50,8 @@ namespace Proyecto_web_api.api.Controllers
         {
             try
             {
-                var messages = await _chatService.GetMessagesByChat(chatId);
+                var UserId = int.Parse(User.FindFirst("UserId")?.Value ?? throw new Exception("No se encontró el ID del usuario."));
+                var messages = await _chatService.GetMessagesByChat(chatId, UserId);
                 if (messages == null)
                 {
                     return NotFound(new { error = "No se encontraron mensajes para el chat." });
