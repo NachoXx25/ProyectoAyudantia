@@ -47,10 +47,12 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<IPostService, PostService>();
+builder.Services.AddScoped<IChatService, ChatService>();
 
 //Alcance de repositorios
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IPostRepository, PostRepository>();
+builder.Services.AddScoped<IChatRepository, ChatRepository>();
 
 // Configuración de autenticación, valida en cada request si el token es valido (siempre y cuando se envíe un token en la cabecera)
 builder.Services.AddAuthentication( options => 
