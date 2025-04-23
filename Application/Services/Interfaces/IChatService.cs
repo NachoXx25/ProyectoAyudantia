@@ -15,9 +15,8 @@ namespace Proyecto_web_api.Application.Services.Interfaces
         /// Obtiene los mensajes de un chat.
         /// </summary>
         /// <param name="ChatId">El ID del chat.</param>
-        /// <param name="UserId">El ID del usuario.</param>
         /// <returns>La información del chat con los mensajes.</returns>
-        Task<InfoChatDTO> GetMessagesByChat(int ChatId, int UserId);
+        Task<InfoChatDTO> GetMessagesByChat(int ChatId);
 
         /// <summary>
         /// Envía un mensaje.

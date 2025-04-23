@@ -18,7 +18,6 @@ namespace Proyecto_web_api.api.Controllers
         /// <summary>
         /// Obtiene los chats de un usuario.
         /// </summary>
-        /// <param name="UserId">El ID del usuario.</param>
         /// <returns>Una colección de chats del usuario.</returns>
         [HttpGet("GetChatsByUserId")]
         [Authorize]
@@ -33,6 +32,30 @@ namespace Proyecto_web_api.api.Controllers
                     return NotFound(new { error = "No se encontraron chats para el usuario." });
                 }
                 return Ok(chats);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Obtiene los mensajes de un chat.
+        /// </summary>
+        /// <param name="chatId">El ID del chat.</param>
+        /// <returns>La información del chat con los mensajes.</returns>
+        [HttpGet("GetMessagesByChat/{chatId}")]
+        [Authorize]
+        public async Task<IActionResult> GetMessagesByChat(int chatId)
+        {
+            try
+            {
+                var messages = await _chatService.GetMessagesByChat(chatId);
+                if (messages == null)
+                {
+                    return NotFound(new { error = "No se encontraron mensajes para el chat." });
+                }
+                return Ok(messages);
             }
             catch (Exception ex)
             {

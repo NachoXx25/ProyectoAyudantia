@@ -53,5 +53,27 @@ namespace Proyecto_web_api.Infrastructure.Repositories.Implements
                                                   .ToListAsync();
             return senderChats.Concat(repliedChats).ToList();
         }
+
+        /// <summary>
+        /// Obtiene los mensajes de un chat.
+        /// </summary>
+        /// <param name="ChatId">El ID del chat.</param>
+        /// <returns>La información del chat con los mensajes.</returns>
+        public async Task<InfoChatDTO> GetMessagesByChat(int ChatId)
+        {
+            Chat chat = await _context.Chats.Include(c => c.Messages).AsNoTracking().FirstOrDefaultAsync(c => c.Id == ChatId) ?? throw new Exception("Error en el sistema, vuelva a intentarlo más tarde.");
+            var timeZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific SA Standard Time");
+            return new InfoChatDTO
+            {
+                ChatId = chat.Id,
+                Messages = chat.Messages.Select(m => new MessageInChatDTO
+                {
+                    Content = m.Content,
+                    Date = TimeZoneInfo.ConvertTime(m.SentAt, timeZone),
+                    SenderId = m.SenderId,
+                    RepliedTo = m.RepliedId,
+                }).ToList()
+            };
+        }
     }
 }

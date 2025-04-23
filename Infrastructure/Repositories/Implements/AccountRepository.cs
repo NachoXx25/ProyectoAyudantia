@@ -141,6 +141,7 @@ namespace Proyecto_web_api.Infrastructure.Repositories.Implements
             else{
                 userProfileDTO = new AnotherUserProfileDTO
                 {
+                    UserId = userProfile.UserId,
                     NickName = userProfile.NickName,
                     FirstName = userProfile.IsFirstNamePublic ? userProfile.FirstName : null,
                     LastName = userProfile.IsLastNamePublic ? userProfile.LastName : null,

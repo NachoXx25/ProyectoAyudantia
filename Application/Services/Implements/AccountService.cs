@@ -56,9 +56,9 @@ namespace Proyecto_web_api.Application.Services.Implements
         /// <param name="userId">Id del usuario</param>
         /// <param name="userIdRequest">Id del usuario que solicita el perfil</param>
         /// <returns>Perfil del usuario</returns>
-        public Task<Object> GetUserProfile(int userId, int? userIdRequest)
+        public async Task<Object> GetUserProfile(int userId, int? userIdRequest)
         {
-            var userProfile = _accountRepository.GetUserProfile(userId, userIdRequest);
+            var userProfile = await _accountRepository.GetUserProfile(userId, userIdRequest);
             if (userProfile == null) throw new Exception("Error en el sistema, vuelva a intentarlo más tarde.");
             return userProfile;
         }

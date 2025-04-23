@@ -4,6 +4,7 @@ using Proyecto_web_api.Application.DTOs.ChatDTOs;
 using Proyecto_web_api.Application.Services.Interfaces;
 using Proyecto_web_api.Domain.Models;
 using Proyecto_web_api.Infrastructure.Repositories.Interfaces;
+using Serilog;
 
 namespace Proyecto_web_api.Application.Services.Implements
 {
@@ -13,11 +14,8 @@ namespace Proyecto_web_api.Application.Services.Implements
 
         private readonly UserManager<User> _userManager;
 
-        private readonly IAccountRepository _accountRepository;
-
-        public ChatService(IChatRepository chatRepository, UserManager<User> userManager, IAccountRepository accountRepository)
+        public ChatService(IChatRepository chatRepository, UserManager<User> userManager)
         {
-            _accountRepository = accountRepository;
             _chatRepository = chatRepository;
             _userManager = userManager;
         }
@@ -46,11 +44,18 @@ namespace Proyecto_web_api.Application.Services.Implements
         /// Obtiene los mensajes de un chat.
         /// </summary>
         /// <param name="ChatId">El ID del chat.</param>
-        /// <param name="UserId">El ID del usuario.</param>
         /// <returns>La información del chat con los mensajes.</returns>
-        public Task<InfoChatDTO> GetMessagesByChat(int ChatId, int UserId)
+        public async Task<InfoChatDTO> GetMessagesByChat(int ChatId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await _chatRepository.GetMessagesByChat(ChatId);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error al obtener los mensajes del chat: {Error}", ex.Message);
+                throw new Exception("Error al obtener los mensajes del chat: " + ex.Message);
+            }
         }
 
         /// <summary>
