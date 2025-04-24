@@ -20,6 +20,14 @@ namespace Proyecto_web_api.Application.Services.Interfaces
         Task<InfoChatDTO> GetMessagesByChat(int ChatId, int UserId);
 
         /// <summary>
+        /// Verifica si un chat existe entre dos usuarios, y lo crea si no existe.
+        /// </summary>
+        /// <param name="repliedId">El ID del usuario al que se responde.</param>
+        /// <param name="SenderId">El ID del usuario que envía el mensaje.</param>
+        /// <returns>El DTO con la información del chat.</returns>
+        Task<InfoInChatDTO> CreateOrGetChat(int repliedId, int SenderId);
+
+        /// <summary>
         /// Envía un mensaje.
         /// </summary>
         /// <param name="Message">El DTO con la información del mensaje a enviar.</param>

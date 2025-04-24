@@ -110,7 +110,6 @@ namespace Proyecto_web_api.api.Hubs
                 
                 foreach (var chatId in chatIds)
                 {
-                    // Reutiliza el método JoinChat existente
                     await JoinChat(chatId);
                 }
                 

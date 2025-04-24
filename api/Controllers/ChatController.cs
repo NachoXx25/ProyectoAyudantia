@@ -63,5 +63,26 @@ namespace Proyecto_web_api.api.Controllers
                 return BadRequest(new { error = ex.Message });
             }
         }
+
+        /// <summary>
+        /// Verifica si un chat existe entre dos usuarios, y lo crea si no existe.
+        /// </summary>
+        /// <param name="repliedId">El ID del usuario al que se responde.</param>
+        /// <returns>El DTO con la información del chat.</returns>
+        [HttpPost("CreateOrGetChat/{repliedId}")]
+        [Authorize]
+        public async Task<IActionResult> CreateOrGetChat(int repliedId)
+        {
+            try
+            {
+                var UserId = int.Parse(User.FindFirst("UserId")?.Value ?? throw new Exception("No se encontró el ID del usuario."));
+                var chat = await _chatService.CreateOrGetChat(repliedId, UserId);
+                return Ok(chat);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
     }
 }
