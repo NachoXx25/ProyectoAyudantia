@@ -51,14 +51,38 @@ namespace Proyecto_web_api.Application.Services.Implements
         }
 
         /// <summary>
+        /// Obtiene el perfil del usuario logueado
+        /// </summary>
+        /// <param name="userId">Id del usuario</param>
+        /// <returns>Perfil del usuario</returns>
+        public async Task<UserProfileDTO> GetOwnProfile(int userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString()) ?? throw new Exception("Error en el sistema, vuelva a intentarlo más tarde.");
+            var userProfile = await _accountRepository.GetUserProfileById(userId) ?? throw new Exception("Error en el sistema, vuelva a intentarlo más tarde.");
+            var userProfileDTO = new UserProfileDTO
+            {
+                NickName = userProfile.NickName,
+                FirstName = userProfile.FirstName,
+                LastName = userProfile.LastName,
+                IsFirstNamePublic = userProfile.IsFirstNamePublic,
+                IsLastNamePublic = userProfile.IsLastNamePublic,
+                Bio = userProfile.Bio,
+                IsBioPublic = userProfile.IsBioPublic,
+                ProfilePicture = userProfile.ProfilePicture,
+                IsProfilePicturePublic = userProfile.IsProfilePicturePublic,
+            };
+            return userProfileDTO;
+        }
+
+        /// <summary>
         /// Obtiene el perfil del usuario
         /// </summary>
         /// <param name="userId">Id del usuario</param>
         /// <param name="userIdRequest">Id del usuario que solicita el perfil</param>
         /// <returns>Perfil del usuario</returns>
-        public Task<Object> GetUserProfile(int userId, int? userIdRequest)
+        public async Task<Object> GetUserProfile(int userId, int? userIdRequest)
         {
-            var userProfile = _accountRepository.GetUserProfile(userId, userIdRequest);
+            var userProfile = await _accountRepository.GetUserProfile(userId, userIdRequest);
             if (userProfile == null) throw new Exception("Error en el sistema, vuelva a intentarlo más tarde.");
             return userProfile;
         }

@@ -17,8 +17,17 @@
 							"script": {
 								"exec": [
 									"var res = pm.response.json();\r",
-									"\r",
 									"pm.environment.set(\"token\", res.token);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
 									""
 								],
 								"type": "text/javascript",
@@ -31,7 +40,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"email\": \"VoIq2.v71_j2d+frQCDWI37oc3_4NNE9+aWjne5jjm1RfuugiRzhM@3Ce0pMqRkXBpCdeq6Dbm-kv1.ovNzgRmKFqBEywyqfdmnBBTKWZYnIwpstpjqaqYWjMnQsulRPOuzSCOomAulUotNpescEFdcFdSqkIgdCrnvtvOdyS\",\r\n  \"password\": \"string\",\r\n  \"rememberMe\": true\r\n}",
+							"raw": "{\r\n  \"email\": \"x.x@gmail.com\",\r\n  \"password\": \"Hola12345\",\r\n  \"rememberMe\": true\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -124,6 +133,35 @@
 								"Account",
 								"GetUserProfile",
 								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Own Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/Account/GetOwnProfile",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"Account",
+								"GetOwnProfile"
 							]
 						}
 					},
@@ -513,6 +551,167 @@
 								"Post",
 								"ArchiveOrUnarchivePost",
 								"3"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Chat",
+			"item": [
+				{
+					"name": "Get Chats By User Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/Chat/GetChatsByUserId",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"Chat",
+								"GetChatsByUserId"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Messages By Chat",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/Chat/GetMessagesByChat/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"Chat",
+								"GetMessagesByChat",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Chat Ids",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/Chat/GetUserChatIds",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"Chat",
+								"GetUserChatIds"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Or Get Chat",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/Chat/CreateOrGetChat/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"Chat",
+								"CreateOrGetChat",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Send Message",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"chatId\": \"1\",\r\n  \"content\": \"Me dieron el alta\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/Chat/SendMessage",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"Chat",
+								"SendMessage"
 							]
 						}
 					},

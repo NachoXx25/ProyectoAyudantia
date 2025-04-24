@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Proyecto_web_api.api.Hubs;
 using Proyecto_web_api.Application.Services.Implements;
 using Proyecto_web_api.Application.Services.Interfaces;
 using Proyecto_web_api.Domain.Models;
@@ -28,7 +29,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddIdentity<User, Role>().AddEntityFrameworkStores<DataContext>().AddDefaultTokenProviders();
-
+builder.Services.AddSignalR();
 //Añade el servicio de CORS para habilitar request desde el puerto predeterminado de Next.js
 builder.Services.AddCors(options => 
 {
@@ -37,6 +38,7 @@ builder.Services.AddCors(options =>
             builder.WithOrigins("http://localhost:3000");
             builder.AllowAnyHeader();
             builder.AllowAnyMethod();
+            builder.AllowCredentials();
         });
 });
 
@@ -46,10 +48,12 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<IPostService, PostService>();
+builder.Services.AddScoped<IChatService, ChatService>();
 
 //Alcance de repositorios
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IPostRepository, PostRepository>();
+builder.Services.AddScoped<IChatRepository, ChatRepository>();
 
 // Configuración de autenticación, valida en cada request si el token es valido (siempre y cuando se envíe un token en la cabecera)
 builder.Services.AddAuthentication( options => 
@@ -118,7 +122,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-
+app.MapHub<NotificationHub>("/notificationHub"); 
 app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
