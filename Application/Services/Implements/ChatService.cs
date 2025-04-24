@@ -16,13 +16,15 @@ namespace Proyecto_web_api.Application.Services.Implements
         private readonly IHubContext<NotificationHub> _hubContext;
         private readonly UserManager<User> _userManager;
         private readonly IAccountRepository _accountRepository;
+        private readonly RoleManager<Role> _roleManager;
 
-        public ChatService(IChatRepository chatRepository, UserManager<User> userManager, IHubContext<NotificationHub> hubContext, IAccountRepository accountRepository)
+        public ChatService(IChatRepository chatRepository, UserManager<User> userManager, IHubContext<NotificationHub> hubContext, IAccountRepository accountRepository, RoleManager<Role> roleManager)
         {
             _accountRepository = accountRepository;
             _chatRepository = chatRepository;
             _userManager = userManager;
             _hubContext = hubContext;
+            _roleManager = roleManager;
         }
 
         /// <summary>
@@ -118,7 +120,10 @@ namespace Proyecto_web_api.Application.Services.Implements
             int.TryParse(Message.SenderId, out int senderOfMessageId);
             var repliedOfMessageId = 0;
             Chat? chat = await _chatRepository.GetChatById(chatId) ?? throw new Exception("Chat no encontrado.");
-            var senderId = await _userManager.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == senderOfMessageId) ?? throw new Exception("Usuario remitente no encontrado.");
+            var sender = await _userManager.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == senderOfMessageId) ?? throw new Exception("Usuario remitente no encontrado.");
+            var RoleId = sender.RoleId;
+            var role = await _roleManager.Roles.AsNoTracking().FirstOrDefaultAsync(r => r.Id == RoleId) ?? throw new Exception("Rol no encontrado.");
+            if (role.Name == "Free" && chat.Messages.Where(c => c.SenderId == senderOfMessageId).Count() == 3) throw new Exception("No puedes enviar más de 3 mensajes en un chat como usuario gratuito.");
             if (chat.SenderId != senderOfMessageId) 
             {
                 repliedOfMessageId = chat.SenderId;
