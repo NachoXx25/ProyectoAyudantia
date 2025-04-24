@@ -25,5 +25,12 @@ namespace Proyecto_web_api.Application.Services.Interfaces
         /// <param name="userIdRequest">Id del usuario que solicita el perfil</param>
         /// <returns>Perfil del usuario</returns>
         Task<Object> GetUserProfile(int userId, int? userIdRequest);
+
+        /// <summary>
+        /// Obtiene el perfil del usuario logueado
+        /// </summary>
+        /// <param name="userId">Id del usuario</param>
+        /// <returns>Perfil del usuario</returns>
+        Task<UserProfileDTO> GetOwnProfile(int userId);
     }
 }

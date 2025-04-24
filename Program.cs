@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Proyecto_web_api.api.Hubs;
 using Proyecto_web_api.Application.Services.Implements;
 using Proyecto_web_api.Application.Services.Interfaces;
 using Proyecto_web_api.Domain.Models;
@@ -28,7 +29,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddIdentity<User, Role>().AddEntityFrameworkStores<DataContext>().AddDefaultTokenProviders();
-
+builder.Services.AddSignalR();
 //Añade el servicio de CORS para habilitar request desde el puerto predeterminado de Next.js
 builder.Services.AddCors(options => 
 {
@@ -121,7 +122,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-
+app.MapHub<NotificationHub>("/notificationHub"); 
 app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();

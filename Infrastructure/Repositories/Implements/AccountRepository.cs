@@ -151,5 +151,15 @@ namespace Proyecto_web_api.Infrastructure.Repositories.Implements
             }
             return userProfileDTO;
         }
+
+        /// <summary>
+        /// Obtiene el perfil del usuario logueado
+        /// summary>
+        /// <param name="userId">Id del usuario</param>
+        /// <returns>Perfil del usuario</returns>
+        public async Task<UserProfile?> GetUserProfileById(int userId)
+        {
+            return await _context.UserProfiles.AsNoTracking().FirstOrDefaultAsync(up => up.UserId == userId);
+        }
     }
 }

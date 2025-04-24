@@ -26,7 +26,7 @@ namespace Proyecto_web_api.api.Controllers
         {
             try
             {
-                var UserId = int.Parse(User.FindFirst("UserId")?.Value ?? throw new Exception("No se encontró el ID del usuario."));
+                var UserId = int.Parse(User.FindFirst("Id")?.Value ?? throw new Exception("No se encontró el ID del usuario."));
                 var chats = await _chatService.GetChats(UserId);
                 if (chats == null || !chats.Any())
                 {
@@ -51,7 +51,7 @@ namespace Proyecto_web_api.api.Controllers
         {
             try
             {
-                var UserId = int.Parse(User.FindFirst("UserId")?.Value ?? throw new Exception("No se encontró el ID del usuario."));
+                var UserId = int.Parse(User.FindFirst("Id")?.Value ?? throw new Exception("No se encontró el ID del usuario."));
                 var messages = await _chatService.GetMessagesByChat(chatId, UserId);
                 if (messages == null)
                 {
@@ -76,7 +76,7 @@ namespace Proyecto_web_api.api.Controllers
         {
             try
             {
-                var UserId = int.Parse(User.FindFirst("UserId")?.Value ?? throw new Exception("No se encontró el ID del usuario."));
+                var UserId = int.Parse(User.FindFirst("Id")?.Value ?? throw new Exception("No se encontró el ID del usuario."));
                 var chat = await _chatService.CreateOrGetChat(repliedId, UserId);
                 return Ok(chat);
             }
@@ -98,7 +98,7 @@ namespace Proyecto_web_api.api.Controllers
             if(!ModelState.IsValid) return BadRequest(ModelState);
             try
             {
-                var UserId = int.Parse(User.FindFirst("UserId")?.Value ?? throw new Exception("No se encontró el ID del usuario."));
+                var UserId = int.Parse(User.FindFirst("Id")?.Value ?? throw new Exception("No se encontró el ID del usuario."));
                 messageDTO.SenderId = UserId.ToString();
                 await _chatService.SendMessage(messageDTO);
                 return NoContent();

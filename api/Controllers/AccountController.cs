@@ -38,6 +38,27 @@ namespace Proyecto_web_api.api.Controllers
         }
 
         /// <summary>
+        /// Obtiene el perfil del usuario logueado
+        /// </summary>
+        /// <returns>Perfil del usuario</returns>
+        [HttpGet("GetOwnProfile")]
+        [Authorize]
+        public async Task<IActionResult> GetOwnProfile()
+        {
+            int? userIdClaim = int.TryParse(User.FindFirst("Id")?.Value, out int id) ? id : null;
+            if(userIdClaim == null) return Unauthorized(new { error = "Token inválido o expirado" });
+            try
+            {
+                var userProfile = await _accountService.GetOwnProfile(userIdClaim.Value);
+                return Ok(userProfile);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
+        /// <summary>
         /// Cambia la contraseña del usuario
         /// </summary>
         /// <param name="changePasswordDTO">Contraseña actual y nueva contraseña</param>
