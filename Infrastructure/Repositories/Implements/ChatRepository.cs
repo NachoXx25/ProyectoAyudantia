@@ -144,5 +144,29 @@ namespace Proyecto_web_api.Infrastructure.Repositories.Implements
                 };
             }
         }
+
+        /// <summary>
+        /// Obtiene un chat por su ID.
+        /// </summary>
+        /// <param name="chatId">El ID del chat.</param>
+        /// <returns>El chat correspondiente al ID.</returns>
+        public async Task<Chat?> GetChatById(int chatId)
+        {
+            return await _context.Chats.AsNoTracking().Include(c => c.Messages).FirstOrDefaultAsync(c => c.Id == chatId);
+        }
+
+        /// <summary>
+        /// Envía un mensaje a un chat.
+        /// </summary>
+        /// <param name="message">El mensaje a enviar.</param>
+        /// <returns>El mensaje enviado.</returns>
+        public async Task<Message> SendMessage(Message message)
+        {
+            var chat = await _context.Chats.FirstOrDefaultAsync( c => c.Id == message.ChatId) ?? throw new Exception("Error en el sistema, vuelva a intentarlo más tarde.");
+            if (chat.SenderId != message.SenderId && chat.RepliedId != message.SenderId) throw new Exception("No tienes permisos para enviar mensajes en este chat.");
+            chat.Messages.Add(message);
+            await _context.SaveChangesAsync();
+            return message;
+        }
     }
 }

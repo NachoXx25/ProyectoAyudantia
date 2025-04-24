@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Proyecto_web_api.Application.DTOs.ChatDTOs;
 using Proyecto_web_api.Application.Services.Interfaces;
 
 namespace Proyecto_web_api.api.Controllers
@@ -78,6 +79,29 @@ namespace Proyecto_web_api.api.Controllers
                 var UserId = int.Parse(User.FindFirst("UserId")?.Value ?? throw new Exception("No se encontró el ID del usuario."));
                 var chat = await _chatService.CreateOrGetChat(repliedId, UserId);
                 return Ok(chat);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Envía un mensaje a un chat.
+        /// </summary>
+        /// <param name="messageDTO">El DTO con la información del mensaje.</param>
+        /// <returns>El mensaje enviado.</returns>
+        [HttpPost("SendMessage")]
+        [Authorize]
+        public async Task<IActionResult> SendMessage([FromBody] SendMessageDTO messageDTO)
+        {
+            if(!ModelState.IsValid) return BadRequest(ModelState);
+            try
+            {
+                var UserId = int.Parse(User.FindFirst("UserId")?.Value ?? throw new Exception("No se encontró el ID del usuario."));
+                messageDTO.SenderId = UserId.ToString();
+                await _chatService.SendMessage(messageDTO);
+                return NoContent();
             }
             catch (Exception ex)
             {

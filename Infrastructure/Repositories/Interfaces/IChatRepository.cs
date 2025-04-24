@@ -1,4 +1,5 @@
 using Proyecto_web_api.Application.DTOs.ChatDTOs;
+using Proyecto_web_api.Domain.Models;
 
 namespace Proyecto_web_api.Infrastructure.Repositories.Interfaces
 {
@@ -27,5 +28,19 @@ namespace Proyecto_web_api.Infrastructure.Repositories.Interfaces
         /// <param name="requestId">El ID del usuario que envía la request.</param>
         /// <returns>El DTO con la información del chat.</returns>
         public Task<InfoInChatDTO> CreateOrGetChat(int repliedId, int requestId);
+
+        /// <summary>
+        /// Obtiene un chat por su ID.
+        /// </summary>
+        /// <param name="chatId">El ID del chat.</param>
+        /// <returns>El chat correspondiente al ID.</returns>
+        public Task<Chat?> GetChatById(int chatId);
+
+        /// <summary>
+        /// Envía un mensaje a un chat.
+        /// </summary>
+        /// <param name="message">El mensaje a enviar.</param>
+        /// <returns>El mensaje enviado.</returns>
+        public Task<Message> SendMessage(Message message);
     }
 }

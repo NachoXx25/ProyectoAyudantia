@@ -109,9 +109,41 @@ namespace Proyecto_web_api.Application.Services.Implements
         /// Envía un mensaje.
         /// </summary>
         /// <param name="Message">El DTO con la información del mensaje a enviar.</param>
-        public Task SendMessage(SendMessageDTO Message)
+        public async Task SendMessage(SendMessageDTO Message)
         {
-            throw new NotImplementedException();
+            var timeZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific SA Standard Time");
+            int.TryParse(Message.ChatId, out int chatId);
+            int.TryParse(Message.SenderId, out int senderOfMessageId);
+            int.TryParse(Message.RepliedTo, out int repliedOfMessageId);
+            Chat? chat = await _chatRepository.GetChatById(chatId) ?? throw new Exception("Chat no encontrado.");
+            var senderId = await _userManager.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == senderOfMessageId) ?? throw new Exception("Usuario remitente no encontrado.");
+            var repliedId = await _userManager.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == repliedOfMessageId) ?? throw new Exception("Usuario destinatario no encontrado.");
+            Message message = new Message
+            {
+                Content = Message.Content,
+                SenderId = senderOfMessageId,
+                RepliedId = repliedOfMessageId,
+                SentAt = DateTime.UtcNow,
+                ChatId = chatId
+            };
+            try
+            {
+                var savedMessage = await _chatRepository.SendMessage(message);
+                await _hubContext.Clients.Group(chatId.ToString())
+                    .SendAsync("NewMessage", new { 
+                        ChatId = chatId.ToString(),
+                        SenderId = senderOfMessageId,
+                        RepliedId = repliedOfMessageId,
+                        Content = savedMessage.Content,
+                        SentAt = TimeZoneInfo.ConvertTime(savedMessage.SentAt, timeZone),
+                    });
+                Log.Information("Nuevo mensaje enviado en el chat {ChatId} por el usuario {SenderId}", chatId, senderOfMessageId);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+                throw new Exception(ex.Message);
+            }
         }
     }
 }

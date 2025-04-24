@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Proyecto_web_api.Application.DTOs.ChatDTOs
 {
@@ -11,8 +12,7 @@ namespace Proyecto_web_api.Application.DTOs.ChatDTOs
         [Required(ErrorMessage = "El contenido del mensaje es requerido.")]
         public required string Content { get; set; }
 
-        [Required(ErrorMessage = "El id del remitente es requerido.")]
-        [RegularExpression(@"^\d+$", ErrorMessage = "El id del remitente solo puede contener números.")]
+        [JsonIgnore]
         public required string SenderId { get; set; }
 
         [RegularExpression(@"^\d*$", ErrorMessage = "El id del destinatario solo puede contener números.")]
