@@ -123,25 +123,6 @@ namespace Proyecto_web_api.api.Hubs
         }
 
         /// <summary>
-        /// Método para enviar un mensaje a un chat.
-        /// </summary>
-        /// <param name="chatId">El ID del chat en el que se encuentran los usuarios.</param>
-        /// <param name="message">El dto del mensaje.</param>
-        public async Task SendMessage(string chatId, SendMessageDTO message)
-        {
-            try
-            {
-                await Clients.Group(chatId).SendAsync("ReceiveMessage", Context.ConnectionId, message);
-                Log.Information($"Message sent to chat - ChatId: {chatId}");
-            }
-            catch (Exception ex)
-            {
-                Log.Error($"Error sending message to chat - ChatId: {chatId}, Error: {ex.Message}");
-                throw;
-            }
-        }
-
-        /// <summary>
         /// Método para unirse a un grupo de usuario.
         /// </summary>
         /// <param name="userId">El ID del usuario.</param>

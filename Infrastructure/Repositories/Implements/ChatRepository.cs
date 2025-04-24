@@ -61,13 +61,25 @@ namespace Proyecto_web_api.Infrastructure.Repositories.Implements
         /// <param name="ChatId">El ID del chat.</param>
         /// <param name="UserId">El ID del usuario.</param>
         /// <returns>La información del chat con los mensajes.</returns>
-        public async Task<InfoChatDTO> GetMessagesByChat(int ChatId, int UserId)
+        public async Task<InfoInChatDTO> GetMessagesByChat(int ChatId, int UserId)
         {
             Chat chat = await _context.Chats.Include(c => c.Messages).AsNoTracking().FirstOrDefaultAsync(c => c.Id == ChatId) ?? throw new Exception("Error en el sistema, vuelva a intentarlo más tarde.");
             if(chat.RepliedId != UserId && chat.SenderId != UserId) throw new Exception("No tienes permiso para ver este chat.");
-            return new InfoChatDTO
+            var repliedId = 0;
+            if(chat.SenderId != UserId)
+            {
+                repliedId = chat.SenderId;
+            }
+            else
+            {
+                repliedId = chat.RepliedId;
+            }
+            var userProfile = await _context.UserProfiles.AsNoTracking().FirstOrDefaultAsync(up => up.UserId == repliedId) ?? throw new Exception("Error en el sistema, vuelva a intentarlo más tarde.");
+            return new InfoInChatDTO
             {
                 ChatId = chat.Id,
+                RepliedNickName = userProfile.NickName,
+                RepliedProfilePicture = userProfile.IsProfilePicturePublic ? userProfile.ProfilePicture : null,
                 Messages = chat.Messages.Select(m => new MessageInChatDTO
                 {
                     Content = m.Content,

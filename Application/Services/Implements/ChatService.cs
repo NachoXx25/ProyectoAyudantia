@@ -15,9 +15,11 @@ namespace Proyecto_web_api.Application.Services.Implements
         private readonly IChatRepository _chatRepository;
         private readonly IHubContext<NotificationHub> _hubContext;
         private readonly UserManager<User> _userManager;
+        private readonly IAccountRepository _accountRepository;
 
-        public ChatService(IChatRepository chatRepository, UserManager<User> userManager, IHubContext<NotificationHub> hubContext)
+        public ChatService(IChatRepository chatRepository, UserManager<User> userManager, IHubContext<NotificationHub> hubContext, IAccountRepository accountRepository)
         {
+            _accountRepository = accountRepository;
             _chatRepository = chatRepository;
             _userManager = userManager;
             _hubContext = hubContext;
@@ -92,7 +94,7 @@ namespace Proyecto_web_api.Application.Services.Implements
         /// <param name="ChatId">El ID del chat.</param>
         /// <param name="UserId">El ID del usuario.</param>
         /// <returns>La información del chat con los mensajes.</returns>
-        public async Task<InfoChatDTO> GetMessagesByChat(int ChatId, int UserId)
+        public async Task<InfoInChatDTO> GetMessagesByChat(int ChatId, int UserId)
         {
             try
             {
@@ -114,10 +116,18 @@ namespace Proyecto_web_api.Application.Services.Implements
             var timeZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific SA Standard Time");
             int.TryParse(Message.ChatId, out int chatId);
             int.TryParse(Message.SenderId, out int senderOfMessageId);
-            int.TryParse(Message.RepliedTo, out int repliedOfMessageId);
+            var repliedOfMessageId = 0;
             Chat? chat = await _chatRepository.GetChatById(chatId) ?? throw new Exception("Chat no encontrado.");
             var senderId = await _userManager.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == senderOfMessageId) ?? throw new Exception("Usuario remitente no encontrado.");
-            var repliedId = await _userManager.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == repliedOfMessageId) ?? throw new Exception("Usuario destinatario no encontrado.");
+            if (chat.SenderId != senderOfMessageId) 
+            {
+                repliedOfMessageId = chat.SenderId;
+            }
+            else
+            {
+                repliedOfMessageId = chat.RepliedId;
+            }
+            var userRepliedProfile = await _accountRepository.GetUserProfileById(repliedOfMessageId) ?? throw new Exception("Usuario destinatario no encontrado.");
             Message message = new Message
             {
                 Content = Message.Content,
@@ -134,6 +144,7 @@ namespace Proyecto_web_api.Application.Services.Implements
                         ChatId = chatId.ToString(),
                         SenderId = senderOfMessageId,
                         RepliedId = repliedOfMessageId,
+                        RepliedNickName = userRepliedProfile.NickName,
                         Content = savedMessage.Content,
                         SentAt = TimeZoneInfo.ConvertTime(savedMessage.SentAt, timeZone),
                     });

@@ -15,7 +15,7 @@ namespace Proyecto_web_api.Application.DTOs.ChatDTOs
         [JsonIgnore]
         public string? SenderId { get; set; }
 
-        [RegularExpression(@"^\d*$", ErrorMessage = "El id del destinatario solo puede contener números.")]
-        public required string RepliedTo { get; set; }
+        [JsonIgnore]
+        public string? RepliedTo { get; set; }
     }
 }
