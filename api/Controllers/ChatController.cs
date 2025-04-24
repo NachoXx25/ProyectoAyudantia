@@ -66,6 +66,20 @@ namespace Proyecto_web_api.api.Controllers
         }
 
         /// <summary>
+        /// Obtiene los ids de los chats de un usuario.
+        /// </summary>
+        /// <returns>Una colección de ids de chats del usuario.</returns>
+        [HttpGet("GetUserChatIds")]
+        [Authorize]
+        public async Task<IActionResult> GetUserChatIds()
+        {
+            var userId = User.FindFirst("Id")?.Value;
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+            var chatIds = await _chatService.GetUserChatIds(int.Parse(userId));
+            return Ok(chatIds);
+        }
+
+        /// <summary>
         /// Verifica si un chat existe entre dos usuarios, y lo crea si no existe.
         /// </summary>
         /// <param name="repliedId">El ID del usuario al que se responde.</param>

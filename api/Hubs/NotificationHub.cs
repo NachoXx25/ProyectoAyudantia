@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
-using Proyecto_web_api.Application.DTOs.ChatDTOs;
 using Serilog;
 
 namespace Proyecto_web_api.api.Hubs
@@ -46,7 +41,6 @@ namespace Proyecto_web_api.api.Hubs
                     group.Value.Remove(Context.ConnectionId);
                 }
             }
-
             await base.OnDisconnectedAsync(exception);
         }
 
@@ -70,7 +64,6 @@ namespace Proyecto_web_api.api.Hubs
                 }
 
                 await Groups.AddToGroupAsync(Context.ConnectionId, chatId);
-
                 var ConnectionCount = GetConnectionCount(chatId);
                 Log.Information($"Successfully joined chat - ChatId: {chatId}, Active Connections: {ConnectionCount}");
             }

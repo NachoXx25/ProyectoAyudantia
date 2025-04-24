@@ -12,6 +12,13 @@ namespace Proyecto_web_api.Application.Services.Interfaces
         Task<IEnumerable<ChatDTO>> GetChats(int UserId);
 
         /// <summary>
+        /// Obtiene los chats de un usuario con sus perfiles.
+        /// </summary>
+        /// <param name="UserId">El ID del usuario.</param>
+        /// <returns>Una colección de chats del usuario con los perfiles de los otros usuarios.</returns>
+        Task<IEnumerable<string>> GetUserChatIds(int UserId);
+
+        /// <summary>
         /// Obtiene los mensajes de un chat.
         /// </summary>
         /// <param name="ChatId">El ID del chat.</param>

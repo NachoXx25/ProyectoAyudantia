@@ -180,5 +180,16 @@ namespace Proyecto_web_api.Infrastructure.Repositories.Implements
             await _context.SaveChangesAsync();
             return message;
         }
+
+        /// <summary>
+        /// Obtiene los chats de un usuario con sus perfiles.
+        /// </summary>
+        /// <param name="UserId">El ID del usuario.</param>
+        /// <returns>Una colección de chats del usuario con los perfiles de los otros usuarios.</returns>
+        public async Task<IEnumerable<string>> GetUserChatIds(int UserId)
+        {
+            var chats = await _context.Chats.AsNoTracking().Where(c => c.SenderId == UserId || c.RepliedId == UserId).ToListAsync();
+            return chats.Select(c => c.Id.ToString()).ToList();
+        }
     }
 }

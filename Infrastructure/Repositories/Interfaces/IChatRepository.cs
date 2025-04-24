@@ -37,6 +37,13 @@ namespace Proyecto_web_api.Infrastructure.Repositories.Interfaces
         public Task<Chat?> GetChatById(int chatId);
 
         /// <summary>
+        /// Obtiene los chats de un usuario con sus perfiles.
+        /// </summary>
+        /// <param name="UserId">El ID del usuario.</param>
+        /// <returns>Una colección de chats del usuario con los perfiles de los otros usuarios.</returns>
+        Task<IEnumerable<string>> GetUserChatIds(int UserId);
+
+        /// <summary>
         /// Envía un mensaje a un chat.
         /// </summary>
         /// <param name="message">El mensaje a enviar.</param>
