@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "n15zyIjKFJM=",
+  "dgSpecHash": "wiipZ20rdl4=",
   "success": true,
-  "projectFilePath": "C:\\Users\\TheNachoXx\\Desktop\\Ayudantia Proyecto\\Proyecto-web-api\\Proyecto-web-api.csproj",
+  "projectFilePath": "C:\\Users\\TheNachoXx\\OneDrive\\Escritorio\\Ayudantia Proyecto\\Proyecto-web-api\\Proyecto-web-api.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\TheNachoXx\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\TheNachoXx\\.nuget\\packages\\cloudinarydotnet\\1.27.2\\cloudinarydotnet.1.27.2.nupkg.sha512",
