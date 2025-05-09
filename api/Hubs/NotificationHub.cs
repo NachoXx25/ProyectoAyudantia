@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.SignalR;
+using Proyecto_web_api.Application.Services.Interfaces;
 using Serilog;
 
 namespace Proyecto_web_api.api.Hubs
@@ -7,7 +8,11 @@ namespace Proyecto_web_api.api.Hubs
     {
         private static readonly Dictionary<string, HashSet<string>> _groupConnections = new();
         private static readonly object _lock = new();
-        public NotificationHub(){}
+        private readonly IChatService _chatService;
+        public NotificationHub(IChatService chatService)
+        {
+            _chatService = chatService;
+        }
 
         /// <summary>
         /// Método llamado cuando un cliente se conecta.
@@ -74,6 +79,84 @@ namespace Proyecto_web_api.api.Hubs
             }
         }
 
+        /// <summary>
+        /// Método para unirse a un post.
+        /// </summary>
+        /// <param name="postId">El ID del post.</param>
+        public async Task JoinPost(string postId)
+        {
+           try
+           {
+                Log.Information($"Attempting to join post - ConnectionId: {Context.ConnectionId}, PostId: {postId}");
+    
+                lock (_lock)
+                {
+                     if (!_groupConnections.ContainsKey(postId))
+                     {
+                          _groupConnections[postId] = new HashSet<string>();
+                     }
+                     _groupConnections[postId].Add(Context.ConnectionId);
+                }
+    
+                await Groups.AddToGroupAsync(Context.ConnectionId, postId);
+                Log.Information($"Successfully joined post - PostId: {postId}, Active Connections: {GetConnectionCount(postId)}");
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Error joining post - ConnectionId: {Context.ConnectionId}, PostId: {postId}, Error: {ex.Message}");
+               throw;
+            }
+        }
+
+        /// <summary>
+        /// Método para salir de un post.
+        /// </summary>
+        /// <param name="postId">El ID del post.</param>
+        public async Task LeavePost(string postId)
+        {
+            try
+            {
+                Log.Information($"Attempting to leave post - ConnectionId: {Context.ConnectionId}, PostId: {postId}");
+
+                lock (_lock)
+                {
+                    if (_groupConnections.ContainsKey(postId))
+                    {
+                        _groupConnections[postId].Remove(Context.ConnectionId);
+                    }
+                }
+
+                await Groups.RemoveFromGroupAsync(Context.ConnectionId, postId);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Error leaving post - ConnectionId: {Context.ConnectionId}, PostId: {postId}, Error: {ex.Message}");
+                throw;
+            }
+        }   
+
+        /// <summary>
+        /// Método para unirse a múltiples posts a la vez.
+        /// </summary>
+        /// <param name="postIds">Lista de IDs de posts.</param>
+        public async Task JoinAllPosts(List<string> postIds)
+        {
+            try
+            {
+                Log.Information($"Attempting to join multiple posts - ConnectionId: {Context.ConnectionId}, Count: {postIds.Count}");
+                
+                foreach (var postId in postIds)
+                {
+                    await JoinPost(postId);
+                }
+                Log.Information($"Successfully joined all posts - ConnectionId: {Context.ConnectionId}");
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Error joining multiple posts - ConnectionId: {Context.ConnectionId}, Error: {ex.Message}");
+                throw;
+            }
+        }
         /// <summary>
         /// Método para indicar que el usuario ha cerrado la interfaz de un chat pero sigue recibiendo notificaciones.
         /// </summary>
@@ -174,6 +257,7 @@ namespace Proyecto_web_api.api.Hubs
                 throw;
             }
         }
+
 
         /// <summary>
         /// Obtiene el número de conexiones en un grupo.

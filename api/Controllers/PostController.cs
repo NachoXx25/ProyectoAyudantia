@@ -97,6 +97,20 @@ namespace Proyecto_web_api.api.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }   
+
+        /// <summary>
+        /// Obtiene todos los ids de los posts de un usuario
+        /// </summary>
+        /// <returns>Lista de ids de los posts del usuario</returns>
+        [HttpGet("GetAllPostIdsByUserId")]
+        [Authorize]
+        public async Task<IActionResult> GetAllPostIdsByUserId()
+        {
+            var userIdClaim = User.FindFirst("Id")?.Value;
+            int.TryParse(userIdClaim, out int userId);
+            var postIds = await _postService.GetAllPostIdsByUserId(userId);
+            return Ok(postIds);
         }
 
         /// <summary>

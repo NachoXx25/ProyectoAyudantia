@@ -260,5 +260,16 @@ namespace Proyecto_web_api.Infrastructure.Repositories.Implements
                 ).ToListAsync();
             return reactions;
         }
+
+        /// <summary>
+        /// Obtiene todos los ids de los posts de un usuario
+        /// </summary>
+        /// <param name="userId">Id del usuario</param>
+        /// <returns>Lista de ids de los posts del usuario</returns>
+        public async Task<List<int>> GetAllPostIdsByUserId(int userId)
+        {
+            var user = await _context.Users.FindAsync(userId) ?? throw new Exception("El usuario especificado no existe.");
+            return await _context.Posts.AsNoTracking().Where(p => p.AuthorId == user.Id).Select(p => p.Id).ToListAsync();
+        }
     }
 }

@@ -139,5 +139,15 @@ namespace Proyecto_web_api.Application.Services.Implements
                 throw new Exception(ex.Message);
             }
         }
+
+        /// <summary>
+        /// Obtiene todos los ids de los posts de un usuario
+        /// </summary>
+        /// <param name="userId">Id del usuario</param>
+        /// <returns>Lista de ids de los posts del usuario</returns>
+        public async Task<List<int>> GetAllPostIdsByUserId(int userId)
+        {
+            return await _postRepository.GetAllPostIdsByUserId(userId);
+        }
     }
 }
