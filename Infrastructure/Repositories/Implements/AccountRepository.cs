@@ -111,6 +111,20 @@ namespace Proyecto_web_api.Infrastructure.Repositories.Implements
                 throw; 
             }
         }
+        
+        /// <summary>
+        /// Obtiene todos los usuarios
+        /// summary>
+        /// <returns>Lista de usuarios</returns>
+        public async Task<List<UserDTO>> GetAllUsers()
+        {
+            return await _context.Users.Join(_context.UserProfiles, u => u.Id, up => up.UserId, (u, up) => new UserDTO
+            {
+                Id = u.Id,
+                NickName = up.NickName,
+                ProfilePicture = up.IsProfilePicturePublic ? up.ProfilePicture : null,
+            }).ToListAsync();
+        }
 
         /// <summary>
         /// Obtiene el perfil del usuario

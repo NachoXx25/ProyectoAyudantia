@@ -51,6 +51,14 @@ namespace Proyecto_web_api.Application.Services.Implements
         }
 
         /// <summary>
+        /// Obtiene todos los usuarios
+        /// </summary>
+        public async Task<List<UserDTO>> GetAllUsers()
+        {
+            return await _accountRepository.GetAllUsers();
+        }
+
+        /// <summary>
         /// Obtiene el perfil del usuario logueado
         /// </summary>
         /// <param name="userId">Id del usuario</param>

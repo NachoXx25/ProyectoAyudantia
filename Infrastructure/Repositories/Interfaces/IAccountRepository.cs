@@ -19,7 +19,11 @@ namespace Proyecto_web_api.Infrastructure.Repositories.Interfaces
         /// <returns>Mensaje de exito o error</returns>
         Task<string> EditProfile(ProfileDTO profile);
 
-
+        /// <summary>
+        /// Obtiene todos los usuarios
+        /// </summary>
+        /// <returns>Lista de usuarios</returns>
+        Task<List<UserDTO>> GetAllUsers();
         /// <summary>
         /// Obtiene el perfil del usuario
         /// </summary>

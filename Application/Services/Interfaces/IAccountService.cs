@@ -18,6 +18,12 @@ namespace Proyecto_web_api.Application.Services.Interfaces
         /// <returns>Mensaje de exito o error</returns>
         Task<string> EditProfile(ProfileDTO profileDTO);
 
+
+        /// <summary>
+        /// Obtiene todos los usuarios
+        /// </summary>
+        Task<List<UserDTO>> GetAllUsers();
+        
         /// <summary>
         /// Obtiene el perfil del usuario
         /// </summary>

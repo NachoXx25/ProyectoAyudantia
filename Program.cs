@@ -72,6 +72,21 @@ builder.Services.AddAuthentication( options =>
         ValidateAudience = false,
         ClockSkew = TimeSpan.Zero 
     };
+    options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var accessToken = context.Request.Query["access_token"];
+                
+                var path = context.HttpContext.Request.Path;
+                if (!string.IsNullOrEmpty(accessToken) && 
+                    path.StartsWithSegments("/notificationHub"))
+                {
+                    context.Token = accessToken;
+                }
+                return Task.CompletedTask;
+            }
+        };
 });
 
 //Alacance de de repositorios
@@ -122,10 +137,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.MapHub<NotificationHub>("/notificationHub"); 
 app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseHttpsRedirection();
 app.MapControllers();
+app.MapHub<NotificationHub>("/notificationHub"); 
 app.Run();
