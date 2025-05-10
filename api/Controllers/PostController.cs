@@ -108,10 +108,16 @@ namespace Proyecto_web_api.api.Controllers
         [Authorize]
         public async Task<IActionResult> GetAllPostIdsByUserId()
         {
-            var userIdClaim = User.FindFirst("Id")?.Value;
-            int.TryParse(userIdClaim, out int userId);
-            var postIds = await _postService.GetAllPostIdsByUserId(userId);
-            return Ok(postIds);
+            try
+            {
+                var userIdClaim = User.FindFirst("Id")?.Value;
+                int.TryParse(userIdClaim, out int userId);
+                var postIds = await _postService.GetAllPostIdsByUserId(userId);
+                return Ok(new { postIds });
+            }catch(Exception ex)
+            {
+                return BadRequest(new { ex.Message });
+            }
         }
 
         /// <summary>
