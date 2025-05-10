@@ -65,5 +65,12 @@ namespace Proyecto_web_api.Infrastructure.Repositories.Interfaces
         /// <param name="userId">Id del usuario</param>
         /// <returns>Lista de ids de los posts del usuario</returns>
         Task<List<int>> GetAllPostIdsByUserId(int userId);
+
+        /// <summary>
+        /// Crea un nuevo comentario
+        /// </summary>
+        /// <param name="commentDTO">Comentario a crear</param>
+        /// <returns>Comentario creado</returns>
+        Task<CommentSignalDTO> CommentPost(CommentDTO commentDTO);
     }
 }

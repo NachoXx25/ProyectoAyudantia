@@ -271,5 +271,36 @@ namespace Proyecto_web_api.Infrastructure.Repositories.Implements
             var user = await _context.Users.FindAsync(userId) ?? throw new Exception("El usuario especificado no existe.");
             return await _context.Posts.AsNoTracking().Where(p => p.AuthorId == user.Id).Select(p => p.Id).ToListAsync();
         }
+
+        /// <summary>
+        /// Agrega un comentario a un post
+        /// </summary>
+        /// <param name="commentDTO">DTO del comentario a agregar</param>
+        /// <returns>Comentario creado</returns>
+        public async Task<CommentSignalDTO> CommentPost(CommentDTO commentDTO)
+        {
+            var user = await _context.Users.FindAsync(commentDTO.UserId) ?? throw new Exception("El usuario especificado no existe.");
+            var post = await _context.Posts.FindAsync(commentDTO.PostId) ?? throw new Exception("La publicación especificada no existe.");
+            var userProfile = await _context.UserProfiles.FindAsync(user.Id) ?? throw new Exception("El perfil del usuario especificado no existe.");
+            var comment = new Comment
+            {
+                Content = commentDTO.Comment,
+                CreatedAt = DateTime.UtcNow,
+                UserId = user.Id,
+                PostId = post.Id
+            };
+            await _context.Comments.AddAsync(comment);
+            await _context.SaveChangesAsync();
+            return new CommentSignalDTO
+            {
+                UserId = user.Id,
+                UserNickName = userProfile.NickName,
+                ProfilePicture = userProfile.IsProfilePicturePublic ? userProfile.ProfilePicture : null,
+                PostId = post.Id,
+                Comment = comment.Content,
+                AuthorPostId = post.AuthorId,
+                CreatedAt = comment.CreatedAt,
+            };
+        }
     }
 }

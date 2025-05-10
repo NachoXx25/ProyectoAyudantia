@@ -1,4 +1,5 @@
 using Proyecto_web_api.Application.DTOs.PostDTOs;
+using Proyecto_web_api.Domain.Models;
 
 namespace Proyecto_web_api.Application.Services.Interfaces
 {
@@ -64,5 +65,11 @@ namespace Proyecto_web_api.Application.Services.Interfaces
         /// <param name="userId">Id del usuario</param>
         /// <returns>Lista de ids de los posts del usuario</returns>
         Task<List<int>> GetAllPostIdsByUserId(int userId);
+
+        /// <summary>
+        /// Agrega un comentario a un post
+        /// </summary>
+        /// <param name="commentDTO">DTO del comentario a agregar</param>
+        Task CommentPost(CommentDTO commentDTO);
     }
 }
