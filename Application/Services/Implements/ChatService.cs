@@ -43,7 +43,7 @@ namespace Proyecto_web_api.Application.Services.Implements
                 //Como el chat es nuevo y no tiene mensajes, se envía la notificación a ambos usuarios
                 if (!chatInfo.Messages.Any())
                 {
-                    await _hubContext.Clients.User(repliedId.ToString())
+                    await _hubContext.Clients.Group($"User_{repliedId}")
                         .SendAsync("NewChatCreated", new { 
                             ChatId = chatInfo.ChatId.ToString(),
                             UserName = chatInfo.RepliedNickName,
@@ -51,7 +51,7 @@ namespace Proyecto_web_api.Application.Services.Implements
                             SenderId = requestId
                         });
                         
-                    await _hubContext.Clients.User(requestId.ToString())
+                    await _hubContext.Clients.Group($"User_{requestId}")
                         .SendAsync("NewChatCreated", new {
                             ChatId = chatInfo.ChatId.ToString(),
                             UserName = chatInfo.RepliedNickName,

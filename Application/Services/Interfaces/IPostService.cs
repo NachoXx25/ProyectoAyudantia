@@ -1,4 +1,5 @@
 using Proyecto_web_api.Application.DTOs.PostDTOs;
+using Proyecto_web_api.Domain.Models;
 
 namespace Proyecto_web_api.Application.Services.Interfaces
 {
@@ -57,5 +58,24 @@ namespace Proyecto_web_api.Application.Services.Interfaces
         /// <param name="postId">Id del post</param>
         /// <returns>Lista de reacciones del post</returns>
         Task<(IEnumerable<ReactionDTO>, int TotalReactions)> GetReactionsByPostId(int postId);
+
+        /// <summary>
+        /// Obtiene todos los ids de los posts de un usuario
+        /// </summary>
+        /// <param name="userId">Id del usuario</param>
+        /// <returns>Lista de ids de los posts del usuario</returns>
+        Task<List<int>> GetAllPostIdsByUserId(int userId);
+
+        /// <summary>
+        /// Agrega un comentario a un post
+        /// </summary>
+        /// <param name="commentDTO">DTO del comentario a agregar</param>
+        Task CommentPost(CommentDTO commentDTO);
+
+        /// <summary>
+        /// Agrega una reacción a un post
+        /// </summary>
+        /// <param name="reactionDTO">DTO de la reacción a agregar</param>
+        Task ReactToPost(CreateReactionDTO reactionDTO);
     }
 }

@@ -168,6 +168,42 @@
 					"response": []
 				},
 				{
+					"name": "Get All Users",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"x.x@gmail.com\",\r\n  \"password\": \"Hola12345\",\r\n  \"rememberMe\": true\r\n}"
+						},
+						"url": {
+							"raw": "{{url}}/api/Account/GetAllUsers",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"Account",
+								"GetAllUsers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Edit Profile",
 					"request": {
 						"auth": {
@@ -433,6 +469,42 @@
 					"response": []
 				},
 				{
+					"name": "Get Own Post Ids",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/api/Post/GetAllPostIdsByUserId",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"Post",
+								"GetAllPostIdsByUserId"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Create Post",
 					"request": {
 						"auth": {
@@ -471,6 +543,82 @@
 								"api",
 								"Post",
 								"CreatePost"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Comment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"comment\": \"Hola como andamoss\",\r\n  \"postId\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/Post/CreateComment",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"Post",
+								"CreateComment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Reaction",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"postId\": 2,\r\n  \"reaction\": \"haha\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/Post/CreateReaction",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"Post",
+								"CreateReaction"
 							]
 						}
 					},

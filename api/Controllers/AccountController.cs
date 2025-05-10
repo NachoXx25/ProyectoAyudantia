@@ -38,6 +38,25 @@ namespace Proyecto_web_api.api.Controllers
         }
 
         /// <summary>
+        /// Obtiene todos los usuarios
+        /// </summary>
+        /// <returns>Lista de usuarios</returns>
+        [HttpGet("GetAllUsers")]
+        [Authorize] 
+        public async Task<IActionResult> GetAllUsers()
+        {
+            try
+            {
+                var users = await _accountService.GetAllUsers();
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
+        /// <summary>
         /// Obtiene el perfil del usuario logueado
         /// </summary>
         /// <returns>Perfil del usuario</returns>

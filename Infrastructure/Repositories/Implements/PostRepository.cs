@@ -260,5 +260,80 @@ namespace Proyecto_web_api.Infrastructure.Repositories.Implements
                 ).ToListAsync();
             return reactions;
         }
+
+        /// <summary>
+        /// Obtiene todos los ids de los posts de un usuario
+        /// </summary>
+        /// <param name="userId">Id del usuario</param>
+        /// <returns>Lista de ids de los posts del usuario</returns>
+        public async Task<List<int>> GetAllPostIdsByUserId(int userId)
+        {
+            var user = await _context.Users.FindAsync(userId) ?? throw new Exception("El usuario especificado no existe.");
+            return await _context.Posts.AsNoTracking().Where(p => p.AuthorId == user.Id).Select(p => p.Id).ToListAsync();
+        }
+
+        /// <summary>
+        /// Agrega un comentario a un post
+        /// </summary>
+        /// <param name="commentDTO">DTO del comentario a agregar</param>
+        /// <returns>Comentario creado</returns>
+        public async Task<CommentSignalDTO> CommentPost(CommentDTO commentDTO)
+        {
+            var timeZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific SA Standard Time");
+            var user = await _context.Users.FindAsync(commentDTO.UserId) ?? throw new Exception("El usuario especificado no existe.");
+            var post = await _context.Posts.FindAsync(commentDTO.PostId) ?? throw new Exception("La publicación especificada no existe.");
+            var userProfile = await _context.UserProfiles.FindAsync(user.Id) ?? throw new Exception("El perfil del usuario especificado no existe.");
+            var comment = new Comment
+            {
+                Content = commentDTO.Comment,
+                CreatedAt = DateTime.UtcNow,
+                UserId = user.Id,
+                PostId = post.Id
+            };
+            await _context.Comments.AddAsync(comment);
+            await _context.SaveChangesAsync();
+            return new CommentSignalDTO
+            {
+                UserId = user.Id,
+                UserNickName = userProfile.NickName,
+                ProfilePicture = userProfile.IsProfilePicturePublic ? userProfile.ProfilePicture : null,
+                PostId = post.Id,
+                Comment = comment.Content,
+                AuthorPostId = post.AuthorId,
+                CreatedAt = TimeZoneInfo.ConvertTime(comment.CreatedAt, timeZone),
+            };
+        }
+
+        /// <summary>
+        /// Agrega una reacción a un post
+        /// </summary>
+        /// <param name="reactionDTO">DTO de la reacción a agregar</param>
+        /// <returns>Reacción creada</returns>
+        public async Task<ReactionSignalDTO> ReactToPost(CreateReactionDTO reactionDTO)
+        {
+            var timeZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific SA Standard Time");
+            var user = await _context.Users.FindAsync(reactionDTO.UserId) ?? throw new Exception("El usuario especificado no existe.");
+            var post = await _context.Posts.FindAsync(reactionDTO.PostId) ?? throw new Exception("La publicación especificada no existe.");
+            var userProfile = await _context.UserProfiles.FindAsync(user.Id) ?? throw new Exception("El perfil del usuario especificado no existe.");
+            var reactionType = await _context.ReactionTypes.FirstOrDefaultAsync( r => r.Name.ToLower() == reactionDTO.Reaction.ToLower()) ?? throw new Exception("El tipo de reacción especificado no existe.");
+
+            var reaction = new Reaction
+            {
+                UserId = user.Id,
+                PostId = post.Id,
+                ReactionTypeId = reactionType.Id
+            };
+            await _context.Reactions.AddAsync(reaction);
+            await _context.SaveChangesAsync();
+            return new ReactionSignalDTO
+            {
+                UserId = user.Id,
+                UserNickName = userProfile.NickName,
+                ProfilePicture = userProfile.IsProfilePicturePublic ? userProfile.ProfilePicture : null,
+                PostId = post.Id,
+                Reaction = reactionType.Name,
+                CreatedAt = TimeZoneInfo.ConvertTime(reaction.CreatedAt, timeZone),
+            };
+        }
     }
 }

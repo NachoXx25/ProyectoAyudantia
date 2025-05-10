@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.IdentityModel.Tokens;
 using Proyecto_web_api.Application.DTOs.PostDTOs;
 using Proyecto_web_api.Application.Services.Interfaces;
@@ -95,7 +96,27 @@ namespace Proyecto_web_api.api.Controllers
                 }
             }catch(Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { ex.Message });
+            }
+        }   
+
+        /// <summary>
+        /// Obtiene todos los ids de los posts de un usuario
+        /// </summary>
+        /// <returns>Lista de ids de los posts del usuario</returns>
+        [HttpGet("GetAllPostIdsByUserId")]
+        [Authorize]
+        public async Task<IActionResult> GetAllPostIdsByUserId()
+        {
+            try
+            {
+                var userIdClaim = User.FindFirst("Id")?.Value;
+                int.TryParse(userIdClaim, out int userId);
+                var postIds = await _postService.GetAllPostIdsByUserId(userId);
+                return Ok(new { postIds });
+            }catch(Exception ex)
+            {
+                return BadRequest(new { ex.Message });
             }
         }
 
@@ -147,10 +168,56 @@ namespace Proyecto_web_api.api.Controllers
                 return Ok(new {result});
             }catch(Exception ex)
             {
-                return BadRequest("Error al crear el post: " + ex.Message);
+                return BadRequest( new { ex.Message });
             }
         }
 
+        /// <summary>
+        /// Crea un nuevo comentario
+        /// </summary>
+        /// <param name="commentDTO">DTO del comentario a crear</param>
+        /// <returns>Mensaje de éxito o error.</returns>
+        [HttpPost("CreateComment")]
+        [Authorize]
+        public async Task<IActionResult> CreateComment([FromBody] CommentDTO commentDTO)
+        {
+            if(!ModelState.IsValid) return BadRequest(ModelState);
+            try
+            {
+                var userIdClaim = User.FindFirst("Id")?.Value;
+                int.TryParse(userIdClaim, out int Id);
+                commentDTO.UserId = Id;
+                await _postService.CommentPost(commentDTO);
+                return Created();
+            }catch(Exception ex)
+            {
+                return BadRequest(new { ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Crea una nueva reacción
+        /// </summary>
+        /// <param name="reactionDTO">DTO de la reacción a crear</param>
+        /// <returns>Mensaje de éxito o error.</returns>
+        [HttpPost("CreateReaction")]
+        [Authorize]
+        public async Task<IActionResult> CreateReaction([FromBody] CreateReactionDTO reactionDTO)
+        {
+            if(!ModelState.IsValid) return BadRequest(ModelState);
+            try
+            {
+                var userIdClaim = User.FindFirst("Id")?.Value;
+                int.TryParse(userIdClaim, out int Id);
+                reactionDTO.UserId = Id;
+                await _postService.ReactToPost(reactionDTO);
+                return Created();
+            }catch(Exception ex)
+            {
+                return BadRequest(new { ex.Message });
+            }
+        }
+        
         /// <summary>
         /// Obtiene todos los posts de un usuario
         /// </summary>

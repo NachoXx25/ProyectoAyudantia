@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.SignalR;
+using Proyecto_web_api.api.Hubs;
 using Proyecto_web_api.Application.DTOs.PostDTOs;
 using Proyecto_web_api.Application.Services.Interfaces;
 using Proyecto_web_api.Domain.Models;
@@ -10,10 +12,12 @@ namespace Proyecto_web_api.Application.Services.Implements
     {
         private readonly IPostRepository _postRepository;
         private readonly IFileService _fileService;
-        public PostService(IPostRepository postRepository, IFileService fileService)
+        private readonly IHubContext<NotificationHub> _hubContext;
+        public PostService(IPostRepository postRepository, IFileService fileService, IHubContext<NotificationHub> hubContext)
         {
             _fileService = fileService;
             _postRepository = postRepository;
+            _hubContext = hubContext;
         }
             
         /// <summary>
@@ -136,6 +140,60 @@ namespace Proyecto_web_api.Application.Services.Implements
             }catch(Exception ex)
             {
                 Log.Error("Ha ocurrido un error mientras se obtenian las reacciones {Message}", ex.Message);
+                throw new Exception(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Obtiene todos los ids de los posts de un usuario
+        /// </summary>
+        /// <param name="userId">Id del usuario</param>
+        /// <returns>Lista de ids de los posts del usuario</returns>
+        public async Task<List<int>> GetAllPostIdsByUserId(int userId)
+        {
+            try
+            {
+                return await _postRepository.GetAllPostIdsByUserId(userId);
+            }catch (Exception ex)
+            {
+                Log.Error("Ha ocurrido un error mientras se obtenian los ids de los posts {Message}", ex.Message);
+                throw new Exception(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Agrega un comentario a un post
+        /// </summary>
+        /// <param name="commentDTO">DTO del comentario a agregar</param>
+        public async Task CommentPost(CommentDTO commentDTO)
+        {
+            try{
+                var commentSignal = await _postRepository.CommentPost(commentDTO);
+                await _hubContext.Clients.Group(commentSignal.PostId.ToString()).SendAsync("NewComment", commentSignal);
+                await _hubContext.Clients.Group($"User_{commentSignal.AuthorPostId}").SendAsync("ReceiveComment", commentSignal);
+                Log.Information("Se ha agregado un nuevo comentario al post {PostId}", commentSignal.PostId);
+            }catch(Exception ex)
+            {
+                Log.Error("Ha ocurrido un error mientras se agregaba el comentario {Message}", ex.Message);
+                throw new Exception(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Agrega una reacción a un post
+        /// </summary>
+        /// <param name="reactionDTO">DTO de la reacción a agregar</param>
+        public async Task ReactToPost(CreateReactionDTO reactionDTO)
+        {
+            try
+            {
+                var reactionSignal = await _postRepository.ReactToPost(reactionDTO);
+                await _hubContext.Clients.Group(reactionSignal.PostId.ToString()).SendAsync("NewReaction", reactionSignal);
+                await _hubContext.Clients.Group($"User_{reactionSignal.AuthorPostId}").SendAsync("ReceiveReaction", reactionSignal);
+                Log.Information("Se ha agregado una nueva reacción al post {PostId}", reactionSignal.PostId);
+            }catch(Exception ex)
+            {
+                Log.Error("Ha ocurrido un error mientras se agregaba la reacción {Message}", ex.Message);
                 throw new Exception(ex.Message);
             }
         }

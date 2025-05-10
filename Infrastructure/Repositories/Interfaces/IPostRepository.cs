@@ -58,5 +58,26 @@ namespace Proyecto_web_api.Infrastructure.Repositories.Interfaces
         /// <param name="postId">Id del post</param>
         /// <returns>Lista de reacciones del post</returns>
         Task<IEnumerable<ReactionDTO>> GetReactionsByPostId(int postId);
+
+        /// <summary>
+        /// Obtiene todos los ids de los posts de un usuario
+        /// </summary>
+        /// <param name="userId">Id del usuario</param>
+        /// <returns>Lista de ids de los posts del usuario</returns>
+        Task<List<int>> GetAllPostIdsByUserId(int userId);
+
+        /// <summary>
+        /// Crea un nuevo comentario
+        /// </summary>
+        /// <param name="commentDTO">Comentario a crear</param>
+        /// <returns>Comentario creado</returns>
+        Task<CommentSignalDTO> CommentPost(CommentDTO commentDTO);
+
+        /// <summary>
+        /// Agrega una reacción a un post
+        /// </summary>
+        /// <param name="reactionDTO">DTO de la reacción a agregar</param>
+        /// <returns>Reacción creada</returns>
+        Task<ReactionSignalDTO> ReactToPost(CreateReactionDTO reactionDTO);
     }
 }
