@@ -72,5 +72,12 @@ namespace Proyecto_web_api.Infrastructure.Repositories.Interfaces
         /// <param name="commentDTO">Comentario a crear</param>
         /// <returns>Comentario creado</returns>
         Task<CommentSignalDTO> CommentPost(CommentDTO commentDTO);
+
+        /// <summary>
+        /// Agrega una reacción a un post
+        /// </summary>
+        /// <param name="reactionDTO">DTO de la reacción a agregar</param>
+        /// <returns>Reacción creada</returns>
+        Task<ReactionSignalDTO> ReactToPost(CreateReactionDTO reactionDTO);
     }
 }

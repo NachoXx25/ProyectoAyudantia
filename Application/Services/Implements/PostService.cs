@@ -178,5 +178,24 @@ namespace Proyecto_web_api.Application.Services.Implements
                 throw new Exception(ex.Message);
             }
         }
+
+        /// <summary>
+        /// Agrega una reacción a un post
+        /// </summary>
+        /// <param name="reactionDTO">DTO de la reacción a agregar</param>
+        public async Task ReactToPost(CreateReactionDTO reactionDTO)
+        {
+            try
+            {
+                var reactionSignal = await _postRepository.ReactToPost(reactionDTO);
+                await _hubContext.Clients.Group(reactionSignal.PostId.ToString()).SendAsync("NewReaction", reactionSignal);
+                await _hubContext.Clients.Group($"User_{reactionSignal.AuthorPostId}").SendAsync("ReceiveReaction", reactionSignal);
+                Log.Information("Se ha agregado una nueva reacción al post {PostId}", reactionSignal.PostId);
+            }catch(Exception ex)
+            {
+                Log.Error("Ha ocurrido un error mientras se agregaba la reacción {Message}", ex.Message);
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

@@ -42,7 +42,7 @@ namespace Proyecto_web_api.api.Controllers
         /// </summary>
         /// <returns>Lista de usuarios</returns>
         [HttpGet("GetAllUsers")]
-        [Authorize(Roles = "Admin")] 
+        [Authorize] 
         public async Task<IActionResult> GetAllUsers()
         {
             try

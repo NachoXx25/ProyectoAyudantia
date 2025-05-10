@@ -279,6 +279,7 @@ namespace Proyecto_web_api.Infrastructure.Repositories.Implements
         /// <returns>Comentario creado</returns>
         public async Task<CommentSignalDTO> CommentPost(CommentDTO commentDTO)
         {
+            var timeZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific SA Standard Time");
             var user = await _context.Users.FindAsync(commentDTO.UserId) ?? throw new Exception("El usuario especificado no existe.");
             var post = await _context.Posts.FindAsync(commentDTO.PostId) ?? throw new Exception("La publicación especificada no existe.");
             var userProfile = await _context.UserProfiles.FindAsync(user.Id) ?? throw new Exception("El perfil del usuario especificado no existe.");
@@ -299,7 +300,39 @@ namespace Proyecto_web_api.Infrastructure.Repositories.Implements
                 PostId = post.Id,
                 Comment = comment.Content,
                 AuthorPostId = post.AuthorId,
-                CreatedAt = comment.CreatedAt,
+                CreatedAt = TimeZoneInfo.ConvertTime(comment.CreatedAt, timeZone),
+            };
+        }
+
+        /// <summary>
+        /// Agrega una reacción a un post
+        /// </summary>
+        /// <param name="reactionDTO">DTO de la reacción a agregar</param>
+        /// <returns>Reacción creada</returns>
+        public async Task<ReactionSignalDTO> ReactToPost(CreateReactionDTO reactionDTO)
+        {
+            var timeZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific SA Standard Time");
+            var user = await _context.Users.FindAsync(reactionDTO.UserId) ?? throw new Exception("El usuario especificado no existe.");
+            var post = await _context.Posts.FindAsync(reactionDTO.PostId) ?? throw new Exception("La publicación especificada no existe.");
+            var userProfile = await _context.UserProfiles.FindAsync(user.Id) ?? throw new Exception("El perfil del usuario especificado no existe.");
+            var reactionType = await _context.ReactionTypes.FirstOrDefaultAsync( r => r.Name.ToLower() == reactionDTO.Reaction.ToLower()) ?? throw new Exception("El tipo de reacción especificado no existe.");
+
+            var reaction = new Reaction
+            {
+                UserId = user.Id,
+                PostId = post.Id,
+                ReactionTypeId = reactionType.Id
+            };
+            await _context.Reactions.AddAsync(reaction);
+            await _context.SaveChangesAsync();
+            return new ReactionSignalDTO
+            {
+                UserId = user.Id,
+                UserNickName = userProfile.NickName,
+                ProfilePicture = userProfile.IsProfilePicturePublic ? userProfile.ProfilePicture : null,
+                PostId = post.Id,
+                Reaction = reactionType.Name,
+                CreatedAt = TimeZoneInfo.ConvertTime(reaction.CreatedAt, timeZone),
             };
         }
     }

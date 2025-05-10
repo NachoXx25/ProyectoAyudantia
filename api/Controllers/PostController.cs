@@ -96,7 +96,7 @@ namespace Proyecto_web_api.api.Controllers
                 }
             }catch(Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { ex.Message });
             }
         }   
 
@@ -162,7 +162,7 @@ namespace Proyecto_web_api.api.Controllers
                 return Ok(new {result});
             }catch(Exception ex)
             {
-                return BadRequest("Error al crear el post: " + ex.Message);
+                return BadRequest( new { ex.Message });
             }
         }
 
@@ -185,10 +185,33 @@ namespace Proyecto_web_api.api.Controllers
                 return Created();
             }catch(Exception ex)
             {
-                return BadRequest("Error al crear el comentario: " + ex.Message);
+                return BadRequest(new { ex.Message });
             }
         }
 
+        /// <summary>
+        /// Crea una nueva reacción
+        /// </summary>
+        /// <param name="reactionDTO">DTO de la reacción a crear</param>
+        /// <returns>Mensaje de éxito o error.</returns>
+        [HttpPost("CreateReaction")]
+        [Authorize]
+        public async Task<IActionResult> CreateReaction([FromBody] CreateReactionDTO reactionDTO)
+        {
+            if(!ModelState.IsValid) return BadRequest(ModelState);
+            try
+            {
+                var userIdClaim = User.FindFirst("Id")?.Value;
+                int.TryParse(userIdClaim, out int Id);
+                reactionDTO.UserId = Id;
+                await _postService.ReactToPost(reactionDTO);
+                return Created();
+            }catch(Exception ex)
+            {
+                return BadRequest(new { ex.Message });
+            }
+        }
+        
         /// <summary>
         /// Obtiene todos los posts de un usuario
         /// </summary>

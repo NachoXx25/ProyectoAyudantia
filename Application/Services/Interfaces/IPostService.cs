@@ -71,5 +71,11 @@ namespace Proyecto_web_api.Application.Services.Interfaces
         /// </summary>
         /// <param name="commentDTO">DTO del comentario a agregar</param>
         Task CommentPost(CommentDTO commentDTO);
+
+        /// <summary>
+        /// Agrega una reacción a un post
+        /// </summary>
+        /// <param name="reactionDTO">DTO de la reacción a agregar</param>
+        Task ReactToPost(CreateReactionDTO reactionDTO);
     }
 }

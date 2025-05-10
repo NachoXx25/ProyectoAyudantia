@@ -157,6 +157,7 @@ namespace Proyecto_web_api.api.Hubs
                 throw;
             }
         }
+        
         /// <summary>
         /// Método para indicar que el usuario ha cerrado la interfaz de un chat pero sigue recibiendo notificaciones.
         /// </summary>
