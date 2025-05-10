@@ -15,7 +15,6 @@ namespace Proyecto_web_api.Application.DTOs.PostDTOs
         [Required (ErrorMessage = "El campo comentario es requerido.")]
         public required string Comment { get; set; } 
 
-        [JsonIgnore]
         public int PostId { get; set; }
     }
 }

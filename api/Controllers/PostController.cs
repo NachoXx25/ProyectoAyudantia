@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.IdentityModel.Tokens;
 using Proyecto_web_api.Application.DTOs.PostDTOs;
 using Proyecto_web_api.Application.Services.Interfaces;
@@ -162,6 +163,29 @@ namespace Proyecto_web_api.api.Controllers
             }catch(Exception ex)
             {
                 return BadRequest("Error al crear el post: " + ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Crea un nuevo comentario
+        /// </summary>
+        /// <param name="commentDTO">DTO del comentario a crear</param>
+        /// <returns>Mensaje de éxito o error.</returns>
+        [HttpPost("CreateComment")]
+        [Authorize]
+        public async Task<IActionResult> CreateComment([FromBody] CommentDTO commentDTO)
+        {
+            if(!ModelState.IsValid) return BadRequest(ModelState);
+            try
+            {
+                var userIdClaim = User.FindFirst("Id")?.Value;
+                int.TryParse(userIdClaim, out int Id);
+                commentDTO.UserId = Id;
+                await _postService.CommentPost(commentDTO);
+                return Created();
+            }catch(Exception ex)
+            {
+                return BadRequest("Error al crear el comentario: " + ex.Message);
             }
         }
 
