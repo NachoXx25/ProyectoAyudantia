@@ -92,9 +92,10 @@ namespace Proyecto_web_api.api.Controllers
                 }
                 else
                 {
-                    return Ok(new { result });
+                    return Ok(new { Comments = result.Item1, TotalComments = result.Item2 });
                 }
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return BadRequest(new { ex.Message });
             }
@@ -139,9 +140,10 @@ namespace Proyecto_web_api.api.Controllers
                 }
                 else
                 {
-                    return Ok(new { result });
+                    return Ok(new { Reactions =result.Item1, TotalReactions = result.Item2 });
                 }
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }

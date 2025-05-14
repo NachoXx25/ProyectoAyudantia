@@ -235,11 +235,11 @@ namespace Proyecto_web_api.Infrastructure.Repositories.Implements
         /// </summary>
         /// <param name="postId">Id del post</param>
         /// <returns>Lista de reacciones del post</returns>
-        public async Task<IEnumerable<ReactionDTO>> GetReactionsByPostId(int postId)
+        public async Task<List<ReactionDTO>> GetReactionsByPostId(int postId)
         {
             if(!await _context.Posts.AnyAsync( p => p.Id == postId)) throw new Exception("La publicación especificada no existe.");
             Log.Information("Obteniendo las reacciones del post {postId}", postId);
-            var reactions = await _context.Reactions
+            return await _context.Reactions
                 .Where( r => r.PostId == postId)
                 .OrderByDescending( r => r.CreatedAt)
                 .Join(
@@ -252,13 +252,13 @@ namespace Proyecto_web_api.Infrastructure.Repositories.Implements
                     _context.Users,
                     joined => joined.Reactions.UserId,
                     user => user.Id,
-                    (joined, user) => new ReactionDTO{
+                    ( joined, user ) => new ReactionDTO
+                    {
                         UserNickName = user.UserName,
                         UserProfilePicture = joined.UserProfile.IsProfilePicturePublic ? joined.UserProfile.ProfilePicture : null,
                         ReactionType = joined.Reactions.ReactionType.Name
                     }
                 ).ToListAsync();
-            return reactions;
         }
 
         /// <summary>
