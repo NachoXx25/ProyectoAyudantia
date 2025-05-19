@@ -57,7 +57,7 @@ namespace Proyecto_web_api.Application.Services.Interfaces
         /// </summary>
         /// <param name="postId">Id del post</param>
         /// <returns>Lista de reacciones del post</returns>
-        Task<(IEnumerable<ReactionDTO>, int TotalReactions)> GetReactionsByPostId(int postId);
+        Task<(List<ReactionDTO>, int TotalReactions)> GetReactionsByPostId(int postId);
 
         /// <summary>
         /// Obtiene todos los ids de los posts de un usuario

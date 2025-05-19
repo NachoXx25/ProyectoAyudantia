@@ -91,11 +91,11 @@ namespace Proyecto_web_api.api.Hubs
     
                 lock (_lock)
                 {
-                     if (!_groupConnections.ContainsKey(postId))
-                     {
-                          _groupConnections[postId] = new HashSet<string>();
-                     }
-                     _groupConnections[postId].Add(Context.ConnectionId);
+                    if (!_groupConnections.ContainsKey(postId))
+                    {
+                        _groupConnections[postId] = new HashSet<string>();
+                    }
+                    _groupConnections[postId].Add(Context.ConnectionId);
                 }
     
                 await Groups.AddToGroupAsync(Context.ConnectionId, postId);

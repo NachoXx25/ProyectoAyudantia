@@ -131,12 +131,12 @@ namespace Proyecto_web_api.Application.Services.Implements
         /// </summary>
         /// <param name="postId">Id del post</param>
         /// <returns>Lista de reacciones del post</returns>
-        public async Task<(IEnumerable<ReactionDTO>, int TotalReactions)> GetReactionsByPostId(int postId)
+        public async Task<(List<ReactionDTO>, int TotalReactions)> GetReactionsByPostId(int postId)
         {
             try
             {
                 var reactions = await _postRepository.GetReactionsByPostId(postId);
-                return (reactions, reactions.Count());
+                return (reactions, reactions.Count);
             }catch(Exception ex)
             {
                 Log.Error("Ha ocurrido un error mientras se obtenian las reacciones {Message}", ex.Message);
