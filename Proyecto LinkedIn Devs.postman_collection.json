@@ -424,7 +424,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{url}}/api/Post/GetCommentsByPostId/2",
+							"raw": "{{url}}/api/Post/GetCommentsByPostId/14",
 							"host": [
 								"{{url}}"
 							],
@@ -432,7 +432,7 @@
 								"api",
 								"Post",
 								"GetCommentsByPostId",
-								"2"
+								"14"
 							]
 						}
 					},
@@ -454,7 +454,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{url}}/api/Post/GetReactionsByPostId/2",
+							"raw": "{{url}}/api/Post/GetReactionsByPostId/14",
 							"host": [
 								"{{url}}"
 							],
@@ -462,7 +462,7 @@
 								"api",
 								"Post",
 								"GetReactionsByPostId",
-								"2"
+								"14"
 							]
 						}
 					},
@@ -565,7 +565,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"comment\": \"Hola como andamoss\",\r\n  \"postId\": 2\r\n}",
+							"raw": "{\r\n  \"comment\": \"Aca estamos en la ayudantia online gracias a Arturo Prat\",\r\n  \"postId\": 14\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -603,7 +603,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"postId\": 2,\r\n  \"reaction\": \"haha\"\r\n}\r\n",
+							"raw": "{\r\n  \"postId\": 14,\r\n  \"reaction\": \"haHa\"\r\n}\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
