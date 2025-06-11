@@ -21,6 +21,42 @@ namespace Proyecto_web_api.api.Controllers
             _stripeService = stripeService;
         }
 
+
+        /// <summary>
+        /// Endpoint que recibe webhooks de Stripe
+        /// </summary>
+        [HttpPost("webhook")]
+        [AllowAnonymous] 
+        public async Task<IActionResult> HandleWebhook()
+        {
+            try
+            {
+                var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
+                var stripeSignature = Request.Headers["Stripe-Signature"].ToString();
+                
+                if (string.IsNullOrEmpty(stripeSignature))
+                {
+                    Log.Warning("Webhook recibido sin Stripe-Signature header");
+                    return BadRequest("Missing Stripe-Signature header");
+                }
+
+                await _stripeService.HandleWebhookAsync(json, stripeSignature);
+                
+                Log.Information("Webhook procesado correctamente");
+                return Ok(); 
+            }
+            catch (StripeException stripeEx)
+            {
+                Log.Error(stripeEx, "Error de Stripe procesando webhook: {StripeError}", stripeEx.Message);
+                return StatusCode(400); 
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error procesando webhook de Stripe");
+                return StatusCode(500); 
+            }
+        }
+        
         /// <summary>
         /// Confirma un pago utilizando un PaymentIntent.
         /// </summary>
