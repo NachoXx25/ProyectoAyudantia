@@ -1,0 +1,1019 @@
+{
+	"info": {
+		"_postman_id": "af104dbf-6c1f-4a71-a35d-f5981e2e199c",
+		"name": "Proyecto LinkedIn Devs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33657530"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var res = pm.response.json();\r",
+									"pm.environment.set(\"token\", res.token);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"x.x@gmail.com\",\r\n  \"password\": \"Hola12345\",\r\n  \"rememberMe\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/Auth/Login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"Auth",
+								"Login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var res = pm.response.json();\r",
+									"\r",
+									"pm.environment.set(\"token\", res.token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"kjP2QUvI8vE.vnp.RfVkmEN.c.utE89M6TjPEx9A@lBb4Y-amHT3ge8qknT4vZdM.zCUALOvVOYyNFblHclzpkJnXNlMkmWeseoZSTxbBXrVyiUwsLBVJYbLQjWwkfsqeptPCZOqnlyRCOCblzwkTuAmiGM\",\r\n  \"password\": \"E0fiDNKzY\",\r\n  \"confirmPassword\": \"z65Z\",\r\n  \"nickName\": \"string\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/Auth/Register",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"Auth",
+								"Register"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Account",
+			"item": [
+				{
+					"name": "Get User Profile By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/Account/GetUserProfile/3",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"Account",
+								"GetUserProfile",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Own Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/Account/GetOwnProfile",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"Account",
+								"GetOwnProfile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Users",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"x.x@gmail.com\",\r\n  \"password\": \"Hola12345\",\r\n  \"rememberMe\": true\r\n}"
+						},
+						"url": {
+							"raw": "{{url}}/api/Account/GetAllUsers",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"Account",
+								"GetAllUsers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "FirstName",
+									"value": "José",
+									"type": "text"
+								},
+								{
+									"key": "IsFirstNamePublic",
+									"value": "true",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "LastName",
+									"value": "Sepúlveda",
+									"type": "text"
+								},
+								{
+									"key": "IsLastNamePublic",
+									"value": "false",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "NickName",
+									"value": "Sepu",
+									"type": "text"
+								},
+								{
+									"key": "Bio",
+									"value": "Bio",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "IsBioPublic",
+									"value": "true",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "ProfilePicture",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "IsProfilePicturePublic",
+									"value": "false",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/api/Account/EditProfile",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"Account",
+								"EditProfile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change Password",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"oldPassword\": \"string\",\r\n  \"newPassword\": \"lwI6vyg2dZ6o2TK6JwO0\",\r\n  \"confirmPassword\": \"6VTYF7Nu7A1mUjwfmPeXfZP12n6DVs30fBTn5wuQLMTumxf5IVyci0Tj8Uok865TSmm5HJJdPSVx\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/Account/ChangePassword",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"Account",
+								"ChangePassword"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Posts",
+			"item": [
+				{
+					"name": "Get All Posts",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/Post/GetAllPosts?page=1&pageSize=10",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"Post",
+								"GetAllPosts"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Own Posts",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/Post/GetOwnPosts?page=1&pageSize=10",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"Post",
+								"GetOwnPosts"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Comments By Post",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/Post/GetCommentsByPostId/14",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"Post",
+								"GetCommentsByPostId",
+								"14"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Reactions By Post",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/Post/GetReactionsByPostId/14",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"Post",
+								"GetReactionsByPostId",
+								"14"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Own Post Ids",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/api/Post/GetAllPostIdsByUserId",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"Post",
+								"GetAllPostIdsByUserId"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Post",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "Content",
+									"value": "Your Content",
+									"type": "text"
+								},
+								{
+									"key": "Files",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/api/Post/CreatePost",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"Post",
+								"CreatePost"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Comment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"comment\": \"Aca estamos en la ayudantia online gracias a Arturo Prat\",\r\n  \"postId\": 14\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/Post/CreateComment",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"Post",
+								"CreateComment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Reaction",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"postId\": 14,\r\n  \"reaction\": \"haHa\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/Post/CreateReaction",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"Post",
+								"CreateReaction"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Post",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "Content",
+									"value": "Your content",
+									"type": "text"
+								},
+								{
+									"key": "Files",
+									"type": "file",
+									"src": [],
+									"disabled": true
+								},
+								{
+									"key": "PostId",
+									"value": "The post Id",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/api/Post/UpdatePost",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"Post",
+								"UpdatePost"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Archive or Unarchive Post",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/Post/ArchiveOrUnarchivePost/3",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"Post",
+								"ArchiveOrUnarchivePost",
+								"3"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Chat",
+			"item": [
+				{
+					"name": "Get Chats By User Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/Chat/GetChatsByUserId",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"Chat",
+								"GetChatsByUserId"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Messages By Chat",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/Chat/GetMessagesByChat/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"Chat",
+								"GetMessagesByChat",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Chat Ids",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/Chat/GetUserChatIds",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"Chat",
+								"GetUserChatIds"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Or Get Chat",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/Chat/CreateOrGetChat/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"Chat",
+								"CreateOrGetChat",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Send Message",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"chatId\": \"1\",\r\n  \"content\": \"Me dieron el alta\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/Chat/SendMessage",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"Chat",
+								"SendMessage"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Stripe",
+			"item": [
+				{
+					"name": "Create Payment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJJZCI6IjIiLCJFbWFpbCI6InNlYmFAZ21haWwuY29tIiwiTmlja05hbWUiOiJzZWJhaSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkZyZWUiLCJleHAiOjE3NDk3NjE5OTh9.XenxorsxPQsiwivvfFTLEY0__rSsz60Rn93S97gkULo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Amount\": 10000,\r\n    \"Currency\": \"clp\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/Stripe/create-payment",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"Stripe",
+								"create-payment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Simulate Payment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJJZCI6IjIiLCJFbWFpbCI6InNlYmFAZ21haWwuY29tIiwiTmlja05hbWUiOiJzZWJhaSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkZyZWUiLCJleHAiOjE3NDk3NjE5OTh9.XenxorsxPQsiwivvfFTLEY0__rSsz60Rn93S97gkULo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"paymentIntentId\": \"pi_3RYwIA2ehcFyh4Ev0vmoV3OJ\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/Stripe/simulate-payment",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"Stripe",
+								"simulate-payment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Confirm Payment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJJZCI6IjEiLCJFbWFpbCI6ImlnbmFjaW9AZ21haWwuY29tIiwiTmlja05hbWUiOiJOYWNob3h4IiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiRnJlZSIsImV4cCI6MTc1MDEwNjM4M30.ThihbhCW8EgfGKvu4gCRYDMLmXuHcRD3P95dLd9FvnA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"paymentIntentId\": \"pi_3RYw5I2ehcFyh4Ev1j65VV20\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/Stripe/confirm-payment",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"Stripe",
+								"confirm-payment"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "http://localhost:5013",
+			"type": "string"
+		}
+	]
+}
