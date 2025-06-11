@@ -11,6 +11,11 @@ namespace Proyecto_web_api.Domain.Models
         public User User { get; set; } = null!;
 
         public string StripeSubscriptionId { get; set; } = string.Empty;
+        public string PaymentStatus { get; set; } = "pending"; 
+        
+        public decimal Amount { get; set; }
+        
+        public string? StripePaymentIntentId { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 

@@ -7,7 +7,7 @@ namespace Proyecto_web_api.Domain.Models
         public User (){
             SecurityStamp = Guid.NewGuid().ToString();
         }
-
+        public string? StripeCustomerId { get; set; }
         public int RoleId { get; set; }
 
         public required Role Role { get; set; }
