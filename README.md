@@ -42,6 +42,11 @@ This system requires certain credentials to run properly. These credentials are 
 
 Additionally, you should take the .env.example file and fill in the relevant information for the database connection.
 
+## Using Ngrok
+The use of Ngrok is recommended for the application to be accessible by Stripe via a public URL.
+
+It is required to set up an event destination for the `STRIPE_WEBHOOK_SECRET` fetching in stripe via the public URL of Ngrok/api/Stripe/webhook
+
 ## Example Of Environment Variables 
 
 To run this project, you will need to add the following environment variables to your .env file.
@@ -56,7 +61,12 @@ To run this project, you will need to add the following environment variables to
 
 `ApiSecret`=your_api_secret_here
 
+`STRIPE_SECRET_KEY`=your_stripe_secret_key
 
+`STRIPE_PUBLISHABLE_KEY `=your_stripe_publishable_key
+
+`STRIPE_WEBHOOK_SECRET`=your_stripe_webhook_secret
+ 
 # Usage
 You can test the API using the Postman collection file included in this repository: Proyecto LinkedIn Devs.postman_collection.json.
 
