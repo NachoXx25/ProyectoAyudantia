@@ -97,7 +97,6 @@ namespace Proyecto_web_api.api.Controllers
             try
             {
                 var paymentIntentService = new PaymentIntentService();
-        
 
                 var confirmedPayment = await paymentIntentService.ConfirmAsync(request.PaymentIntentId, new PaymentIntentConfirmOptions
                 {

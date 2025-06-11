@@ -9,6 +9,5 @@ namespace Proyecto_web_api.Application.DTOs.StripeDTOs
     {
         public decimal Amount { get; set; }
         public string Currency { get; set; } = "clp";
-        public string PaymentMethodId { get; set; } = string.Empty;
     }
 }
